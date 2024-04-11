@@ -6,8 +6,8 @@
 
 /*
 //------------------------
-Autor: Jo„o Henrique Dib
-Projeto: Tarefa de criaÁ„o de tela
+Autor: Jo√£o Henrique Dib
+Projeto: Tarefa de cria√ß√£o de tela
 09/04/2024
 //------------------------
 */
@@ -41,7 +41,7 @@ User Function tarefaF()
 
 
 
-/////////////////////// CRIANDO VIS√O DO BANCO ///////////////////////
+/////////////////////// CRIANDO VIS√ÉO DO BANCO ///////////////////////
 	dbSelectArea("SA2")
 
 	oBrowse := MsSelBr():New( 5,5,570,315,,,,oMsDialog,,,,,,,,,,,,.F.,'SA2',.T.,,.F.,,, )
@@ -52,10 +52,11 @@ User Function tarefaF()
 	oBrowse:lHasMark := .T.
 	oBrowse:bAllMark := {|| alert('Click no header da browse') }
 
-/////////////////////// BOT’ES ///////////////////////
-	oButton1 := TButton():Create(oMsDialog,35,585,"Inserir",{||insert()},75,20,,,,.T.,,,,,,)
-	oButton2 := TButton():Create(oMsDialog,65,585,"Editar",{||update(SA2->A2_COD)},75,20,,,,.T.,,,,,,)
-
+/////////////////////// BOT√ïES ///////////////////////
+	oButton1 := TButton():Create(oMsDialog,65,585,"Inserir",{||insert()},75,20,,,,.T.,,,,,,)
+	oButton2 := TButton():Create(oMsDialog,95,585,"Editar",{||update(SA2->A2_COD)},75,20,,,,.T.,,,,,,)
+	oButton3 := TButton():Create(oMsDialog,125,585,"Deletar",{||delete()},75,20,,,,.T.,,,,,,)
+	oButton1 := TButton():Create(oMsDialog,35,585,"Visualizar",{||view()},75,20,,,,.T.,,,,,,)
 /////////////////////// ATIVANDO JANELA ///////////////////////
 	oMsDialog:Activate(,,,.T.,,,)
 
@@ -67,7 +68,7 @@ RETURN
 
 
 Static Function insert()
-	Local aTFolder := { 'Cadastrais', 'Adm/Fin.', 'Fiscais', 'Compras', 'Direitos autorais', 'TMS', 'Residente Exterior', 'AutÙnomos', 'Outros' }
+	Local aTFolder := { 'Cadastrais', 'Adm/Fin.', 'Fiscais', 'Compras', 'Direitos autorais', 'TMS', 'Residente Exterior', 'Aut√¥nomos', 'Outros' }
 	Local aEstados := FWGetSX5("12")
 	Local aEstados2 := {}
 	Local cTGet1
@@ -100,7 +101,7 @@ Static Function insert()
 
 	/////////////////////// ABA 'Cadastrais' ///////////////////////
 
-	oCodigo       := TGet():New( 0, 1, {|u|if(PCount()==0,cTGet1,cTGet1:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 9999999999",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, cTGet1,,,,,,,'CÛdigo:',1,,,,.T.,)
+	oCodigo       := TGet():New( 0, 1, {|u|if(PCount()==0,cTGet1,cTGet1:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 9999999999",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, cTGet1,,,,,,,'C√≥digo:',1,,,,.T.,)
 
 	oLoja         := TGet():New( 20, 1, {|u|if(PCount()==0,cTGet2,cTGet2:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, cTGet2,,,,,,,'Loja:',1,,,,.T.,)
 
@@ -108,19 +109,19 @@ Static Function insert()
 
 	oEstado       := TComboBox():New( 60, 1, {|u|if(PCount()>0,cCombo:=u,cCombo)}, aEstados2, 100, , oTFolder:aDialogs[1], , , , , , .T., ,, , , , , , , cCombo, 'Estado', 1, , )
 
-	oMunicipio    := TGet():New( 85, 1, {|u|if(PCount()==0,cTGet4,cTGet4:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, cTGet4,,,,,,,'MunicÌpio:',1,,,,.T.,)
+	oMunicipio    := TGet():New( 85, 1, {|u|if(PCount()==0,cTGet4,cTGet4:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, cTGet4,,,,,,,'Munic√≠pio:',1,,,,.T.,)
 
-	oEndereco     := TGet():New( 105, 1, {|u|if(PCount()==0,cTGet5,cTGet5:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, cTGet5,,,,,,,'EndereÁo:',1,,,,.T.,)
+	oEndereco     := TGet():New( 105, 1, {|u|if(PCount()==0,cTGet5,cTGet5:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, cTGet5,,,,,,,'Endere√ßo:',1,,,,.T.,)
 
-	oRazaoSocial  := TGet():New( 125, 1, {|u|if(PCount()==0,cTGet6,cTGet6:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, cTGet6,,,,,,,'Raz„o Social:',1,,,,.T.,)
+	oRazaoSocial  := TGet():New( 125, 1, {|u|if(PCount()==0,cTGet6,cTGet6:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, cTGet6,,,,,,,'Raz√£o Social:',1,,,,.T.,)
 
-	oButton3      := TButton():Create(oJanela,150,1,"Teste cÛdigo",{||insertDb(cTGet1,cTGet2,cTGet3,cCombo,cTGet4,cTGet5,cTGet6)},75,20,,,,.T.,,,,,,)
+	oButton3      := TButton():Create(oJanela,150,1,"Teste c√≥digo",{||insertDb(cTGet1,cTGet2,cTGet3,cCombo,cTGet4,cTGet5,cTGet6,oJanela)},75,20,,,,.T.,,,,,,)
 
 	oJanela:Activate(,,,.T.,,,)
 
 
 RETURN
-Static Function insertDb(codigo, loja,fantasia,estado,municipio,endereco,razao)
+Static Function insertDb(codigo, loja,fantasia,estado,municipio,endereco,razao, oJanela)
 
 	dbSelectArea("SA2")
 	DBGOTOP()
@@ -139,6 +140,7 @@ Static Function insertDb(codigo, loja,fantasia,estado,municipio,endereco,razao)
 	SA2->(dbCloseArea())
 
 	msgInfo("Inserido com sucesso")
+	oJanela:end()
 
 
 RETURN
@@ -172,9 +174,9 @@ Static Function update(cIdLinha)
 	For nNumero := 1 to 26
 		AADD(aEstadosSiglas, AllTrim(aEstados[nNumero][3]))
 	next
-	
 
-	oCodigo       := TGet():New( 0, 1, {|u|if(PCount()==0,cTGet1,cTGet1:=u)}, oJanela, 096, 009, "@N 9999999999",,0,,,,, .T.,,,,,,,,,, cTGet1,,,,,,,'CÛdigo:',1,,,,.T.,)
+
+	oCodigo       := TGet():New( 0, 1, {|u|if(PCount()==0,cTGet1,cTGet1:=u)}, oJanela, 096, 009, "@N 9999999999",,0,,,,, .T.,,,,,,,,,, cTGet1,,,,,,,'C√≥digo:',1,,,,.T.,)
 
 	oLoja         := TGet():New( 20, 1, {|u|if(PCount()==0,cTGet2,cTGet2:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. ,,,,,,,,,, cTGet2,,,,,,,'Loja:',1,,,,.T.,)
 
@@ -183,15 +185,15 @@ Static Function update(cIdLinha)
 	oEstado       := TComboBox():New( 60, 1, {|u|if(PCount()>0,cCombo:=u,cCombo)}, aEstados2, 100, , oJanela, , , , , , .T., ,, , , , , , , cCombo, 'Estado', 1, , )
 	oEstado:Select(aScan(aEstadosSiglas, SA2->A2_EST))
 
-	oMunicipio    := TGet():New( 85, 1, {|u|if(PCount()==0,cTGet4,cTGet4:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. ,,,,,,,,,, cTGet4,,,,,,,'MunicÌpio:',1,,,,.T.,)
+	oMunicipio    := TGet():New( 85, 1, {|u|if(PCount()==0,cTGet4,cTGet4:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. ,,,,,,,,,, cTGet4,,,,,,,'Munic√≠pio:',1,,,,.T.,)
 
-	oEndereco     := TGet():New( 105, 1, {|u|if(PCount()==0,cTGet5,cTGet5:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T.,,,,,,,,,, cTGet5,,,,,,,'EndereÁo:',1,,,,.T.,)
+	oEndereco     := TGet():New( 105, 1, {|u|if(PCount()==0,cTGet5,cTGet5:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T.,,,,,,,,,, cTGet5,,,,,,,'Endere√ßo:',1,,,,.T.,)
 
-	oRazaoSocial  := TGet():New( 125, 1, {|u|if(PCount()==0,cTGet6,cTGet6:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T.,,,,,,,,,, cTGet6,,,,,,,'Raz„o Social:',1,,,,.T.,)
+	oRazaoSocial  := TGet():New( 125, 1, {|u|if(PCount()==0,cTGet6,cTGet6:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T.,,,,,,,,,, cTGet6,,,,,,,'Raz√£o Social:',1,,,,.T.,)
 
-	oButton3      := TButton():Create(oJanela,150,1,"Teste cÛdigo",{||updateDb(SA2->(RecNo()),cTGet1,cTGet2,cTGet3,aEstadosSiglas[aScan(aEstados2, cCombo)],cTGet4,cTGet5,cTGet6,oJanela)},75,20,,,,.T.,,,,,,)
+	oButton3      := TButton():Create(oJanela,150,1,"Teste c√≥digo",{||updateDb(SA2->(RecNo()),cTGet1,cTGet2,cTGet3,aEstadosSiglas[aScan(aEstados2, cCombo)],cTGet4,cTGet5,cTGet6,oJanela)},75,20,,,,.T.,,,,,,)
 
-	
+
 
 
 	oJanela:Activate(,,,.T.,,,)
@@ -205,22 +207,22 @@ RETURN
 
 Static Function updateDb(recno, codigo, loja, fantasia, estado, municipio, endereco, razao, oJanela)
 	Local cQryUpd
-    cQryUpd := "UPDATE " + RetSqlName("SA2") + " "
-    cQryUpd += "SET a2_cod = '" + codigo + "', "
-    cQryUpd += "a2_loja = '" + loja + "', "
-    cQryUpd += "a2_nome = '" + fantasia + "', "
-    cQryUpd += "a2_nreduz = '" + razao + "', "
-    cQryUpd += "a2_end = '" + endereco + "', "
-    cQryUpd += "a2_est = '" + estado + "', "
-    cQryUpd += "a2_mun = '" + municipio + "' "
-    cQryUpd += "WHERE R_E_C_N_O_ = '" + cValToChar(recno) + "' "
-    cQryUpd += "AND D_E_L_E_T_ = ' '"
+	cQryUpd := "UPDATE " + RetSqlName("SA2") + " "
+	cQryUpd += "SET a2_cod = '" + codigo + "', "
+	cQryUpd += "a2_loja = '" + loja + "', "
+	cQryUpd += "a2_nome = '" + fantasia + "', "
+	cQryUpd += "a2_nreduz = '" + razao + "', "
+	cQryUpd += "a2_end = '" + endereco + "', "
+	cQryUpd += "a2_est = '" + estado + "', "
+	cQryUpd += "a2_mun = '" + municipio + "' "
+	cQryUpd += "WHERE R_E_C_N_O_ = '" + cValToChar(recno) + "' "
+	cQryUpd += "AND D_E_L_E_T_ = ' '"
 
 	nErro := TcSqlExec(cQryUpd)
 
 	If nErro != 0
 
-	msgStop("Erro.")
+		msgStop("Erro.")
 
 	Endif
 
@@ -232,3 +234,100 @@ Static Function updateDb(recno, codigo, loja, fantasia, estado, municipio, ender
 RETURN
 
 
+
+Static Function delete()
+	Local oJanela  := TDialog():New(0, 0, 100, 300,'Delete de fornecedores',,,,,CLR_BLACK,CLR_WHITE,,,.T.)
+	Local oButton1
+	Local oButton2
+
+	oButton2 	  :=TButton():Create(oJanela,30,10,"Apagar",{||deleteDb(SA2->(RecNo()), oJanela)},55,20,,,,.T.,,,,,,)
+	oButton1      := TButton():Create(oJanela,30,90,"Cancelar",{||oJanela:end()},55,20,,,,.T.,,,,,,)
+
+
+
+	oJanela:Activate(,,,.T.,,,)
+
+
+RETURN
+
+
+Static Function deleteDb(recno, oJanela)
+
+	Local cQryUpd
+	cQryUpd := "UPDATE " + RetSqlName("SA2") + " "
+	cQryUpd += "SET D_E_L_E_T_ = '" + "*" + "', "
+	cQryUpd += "R_E_C_D_E_L_ = '" + cValToChar(recno) + "'"
+	cQryUpd += "WHERE R_E_C_N_O_ = '" + cValToChar(recno) + "' "
+	cQryUpd += "AND D_E_L_E_T_ = ' '"
+
+	nErro := TcSqlExec(cQryUpd)
+
+	If nErro != 0
+
+		msgStop("Erro.")
+
+	Endif
+
+	oJanela:end()
+	oBrowse:refresh()
+
+RETURN
+
+
+Static Function view()
+	Local oJanela  := TDialog():New(0, 0, 600, 1100,'Cadastro de fornecedores',,,,,CLR_BLACK,CLR_WHITE,,,.T.)
+	Local nNumero := 0
+	Local aEstados := FWGetSX5("12")
+	Local aEstadosSiglas := {}
+	Local cTGet1 := SA2->A2_COD
+	Local cTGet2 := SA2->A2_LOJA
+	Local cTGet3 := SA2->A2_NOME
+	Local cTGet4 := SA2->A2_MUN
+	Local cTGet5 := SA2->A2_END
+	Local cTGet6 := SA2->A2_NREDUZ
+	Local aEstados2 := {}
+	Local cCombo 
+	Local oLoja
+	Local oCodigo
+	Local oNFantasia
+	Local oEstado
+	Local oMunicipio
+	Local oEndereco
+	Local oRazaoSocial
+
+	For nNumero := 1 to 26
+		AADD(aEstados2, aEstados[nNumero][4])
+	next
+
+	For nNumero := 1 to 26
+		AADD(aEstadosSiglas, AllTrim(aEstados[nNumero][3]))
+	next
+
+
+	cCombo := aEstados2[aScan(aEstadosSiglas, SA2->A2_EST)]
+
+	oCodigo       := TGet():New( 0, 1, {|u|if(PCount()==0,cTGet1,cTGet1:=u)}, oJanela, 096, 009, "@N 9999999999",,0,,,,, .T.,,,,,,,.T.,,, cTGet1,,,,,,,'C√≥digo:',1,,,,.T.,)
+
+	oLoja         := TGet():New( 20, 1, {|u|if(PCount()==0,cTGet2,cTGet2:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. ,,,,,,,.T.,,, cTGet2,,,,,,,'Loja:',1,,,,.T.,)
+
+	oNFantasia    := TGet():New( 40, 1, {|u|if(PCount()==0,cTGet3,cTGet3:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. ,,,,,,,.T.,,, cTGet3,,,,,,,'Nome Fantasia:',1,,,,.T.,)
+
+	oEstado       :=  TGet():New( 60, 1, {|u|if(PCount()==0,cCombo,cCombo:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. ,,,,,,,.T.,,, cCombo,,,,,,,'Estado',1,,,,.T.,)
+
+	oMunicipio    := TGet():New( 80, 1, {|u|if(PCount()==0,cTGet4,cTGet4:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. ,,,,,,,.T.,,, cTGet4,,,,,,,'Munic√≠pio:',1,,,,.T.,)
+
+	oEndereco     := TGet():New( 100, 1, {|u|if(PCount()==0,cTGet5,cTGet5:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T.,,,,,,,.T.,,, cTGet5,,,,,,,'Endere√ßo:',1,,,,.T.,)
+
+	oRazaoSocial  := TGet():New( 120, 1, {|u|if(PCount()==0,cTGet6,cTGet6:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T.,,,,,,,.T.,,, cTGet6,,,,,,,'Raz√£o Social:',1,,,,.T.,)
+
+
+
+
+
+
+	oJanela:Activate(,,,.T.,,,)
+
+
+
+
+RETURN
