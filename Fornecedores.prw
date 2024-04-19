@@ -54,22 +54,22 @@ User Function tarefaF()
 	oBrowse:AddColumn(TCColumn():New('CPF/CNPJ'  ,{||SA2->A2_CGC},,,,'LEFT',,.F.,.F.,,,,.F.,))
 
 	oBrowse:lHasMark := .T.
-	oBrowse:bAllMark := {|| alert('Click no header da browse') }
+	//oBrowse:bAllMark := {|| alert('Click no header da browse') }
 
 	/////////////////////// BOTÕES ///////////////////////
-	oButton1 := TButton():Create(oMsDialog,65,585,"Inserir",{||insert()},75,20,,,,.T.,,,,,,)
+	oButton1 := TButton():Create(oMsDialog,65,581,"Inserir",{||insert()},75,20,,,,.T.,,,,,,)
 
-	oButton2 := TButton():Create(oMsDialog,95,585,"Editar",{||update(SA2->A2_COD)},75,20,,,,.T.,,,,,,)
+	oButton2 := TButton():Create(oMsDialog,95,581,"Editar",{||update(SA2->A2_COD)},75,20,,,,.T.,,,,,,)
 
-	oButton3 := TButton():Create(oMsDialog,125,585,"Deletar",{||delete()},75,20,,,,.T.,,,,,,)
+	oButton3 := TButton():Create(oMsDialog,125,581,"Deletar",{||delete()},75,20,,,,.T.,,,,,,)
 
-	oButton4 := TButton():Create(oMsDialog,35,585,"Visualizar",{||view()},75,20,,,,.T.,,,,,,)
+	oButton4 := TButton():Create(oMsDialog,35,581,"Visualizar",{||view()},75,20,,,,.T.,,,,,,)
 
-	oButton5 := TButton():Create(oMsDialog,155,585,"Gerar relatório completo",{||view()},75,20,,,,.T.,,,,,,)
+	oButton5 := TButton():Create(oMsDialog,155,581,"Gerar relatório completo",{||view()},75,20,,,,.T.,,,,,,)
 
-	oButton6 := TButton():Create(oMsDialog,185,585,"Gerar relatório resumido",{||PRINTGRAPH()},75,20,,,,.T.,,,,,,)
+	oButton6 := TButton():Create(oMsDialog,185,581,"Gerar relatório resumido",{||PRINTGRAPH()},75,20,,,,.T.,,,,,,)
 
-	oButton6 := TButton():Create(oMsDialog,215,585,"Fechar",{||oMsDialog:end()},75,20,,,,.T.,,,,,,)
+	oButton6 := TButton():Create(oMsDialog,215,581,"Fechar",{||oMsDialog:end()},75,20,,,,.T.,,,,,,)
 
 	/////////////////////// ATIVANDO JANELA ///////////////////////
 	oMsDialog:Activate(,,,.T.,,,)
@@ -87,6 +87,7 @@ Static Function insert()
 	Local aEstados2 := {}
 	Local aTipos := {"F - Físico", "J - Jurídico"}
 	Local aValores := {{'','Código'},{'','Loja'},{'','Nome Fantasia'},{'','Estado'},{'','Municipio'},{'','Endereço'},{'','Razão Social'}, {'','Tipo'}}
+	Local aValoresN := {{'','CPF/CNPJ'},{'','Código Município'}}
 	Local oLoja
 	Local oCodigo
 	Local oNFantasia
@@ -95,9 +96,9 @@ Static Function insert()
 	Local oEndereco
 	Local oRazaoSocial
 	Local oTipo
+	Local oCGC
+	Local oCodMun
 	Local nNumero
-	Local cTipo
-	Local cCombo   := ""
 	Local oJanela  := TDialog():New(0, 0, 600, 1100,'Cadastro de fornecedores',,,,,CLR_BLACK,CLR_WHITE,,,.T.)
 
 
@@ -113,13 +114,18 @@ Static Function insert()
 
 	/////////////////////// ABA 'Cadastrais' ///////////////////////
 
-	oCodigo       := TGet():New( 0, 1, {|u|if(PCount()==0,aValores[1][1],aValores[1][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 9999999999",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValores[1][1],,,,,,,aValores[1][2],1,,,,.T.,)
+	oCodigo       := TGet():New( 0, 1, {|u|if(PCount()==0,aValores[1][1],aValores[1][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 999999",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValores[1][1],,,,,,,aValores[1][2],1,,,,.T.,)
+
+	oCGC		  := TGet():New( 0, 100, {|u|if(PCount()==0,aValoresN[1][1],aValoresN[1][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@R 999.999.999-99",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValoresN[1][1],,,,,,,aValoresN[1][2],1,,,,.T.,)
 
 	oLoja         := TGet():New( 20, 1, {|u|if(PCount()==0,aValores[2][1],aValores[2][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValores[2][1],,,,,,,aValores[2][2],1,,,,.T.,)
 
+	oCodMun		  := TComboBox():New( 20, 100, {|u|if(PCount()>0,aValoresN[2][1]:=u,aValoresN[2][1])}, aEstados2, 100, , oTFolder:aDialogs[1], ,, , , , .T., ,, , , , , , , aValoresN[2][1], aValoresN[2][2], 1, , )
+	
 	oNFantasia    := TGet():New( 40, 1, {|u|if(PCount()==0,aValores[3][1],aValores[3][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValores[3][1],,,,,,,aValores[3][2],1,,,,.T.,)
 
-	oEstado       := TComboBox():New( 60, 1, {|u|if(PCount()>0,aValores[4][1]:=u,aValores[4][1])}, aEstados2, 100, , oTFolder:aDialogs[1], , , , , , .T., ,, , , , , , , aValores[4][1], aValores[4][2], 1, , )
+	oEstado       := TComboBox():New( 60, 1, {|u|if(PCount()>0,aValores[4][1]:=u,aValores[4][1])}, aEstados2, 100, , oTFolder:aDialogs[1], , {||getMunicipios(oEstado, @oCodMun)}, , , , .T., ,, , , , , , , aValores[4][1], aValores[4][2], 1, , )
+	getMunicipios(oEstado,	oCodMun)
 
 	oMunicipio    := TGet():New( 85, 1, {|u|if(PCount()==0,aValores[5][1],aValores[5][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValores[5][1],,,,,,,aValores[5][2],1,,,,.T.,)
 
@@ -127,11 +133,10 @@ Static Function insert()
 
 	oRazaoSocial  := TGet():New( 125, 1, {|u|if(PCount()==0,aValores[7][1],aValores[7][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValores[7][1],,,,,,,aValores[7][2],1,,,,.T.,)
 
-	//cTipo		  := TSay():New( 145, 1, {||'Tipo'}, oTFolder:aDialogs[1] , , , , , , .T., ,,,, ,, ,,, ,,  )
-	oTipo 		  := TComboBox():New( 150, 1, {|u|if(PCount()>0,aValores[8][1]:=u,aValores[8][1])}, aTipos, 100, , oTFolder:aDialogs[1], , , , , , .T., ,, , , , , , , aValores[8][1], aValores[8][2], 1, , )
+	oTipo 		  := TComboBox():New( 150, 1, {|u|if(PCount()>0,aValores[8][1]:=u,aValores[8][1])}, aTipos, 100, , oTFolder:aDialogs[1], ,{||verificaCgc(oTipo, @oCGC)} , , , , .T., ,, , , , , , , aValores[8][1], aValores[8][2], 1, , )
 
 
-	oButton3      := TButton():Create(oJanela, 185,1,"Teste código",{||insertDb(aValores,oJanela)},75,20,,,,.T.,,,,,,)
+	oButton3      := TButton():Create(oJanela, 200,1,"Inserir",{||insertDb(aValores, aValoresN, oJanela)},75,20,,,,.T.,,,,,,)
 
 
 
@@ -140,11 +145,12 @@ Static Function insert()
 
 RETURN
 
-Static Function insertDb(aValores, oJanela)
+
+Static Function insertDb(aValores, aValoresN, oJanela)
 	Local aValoresFaltantes := verificaValores(aValores)
 	Local cValoresTexto := ''
-	Local nI 
-	If Len(aValoresFaltantes) > 0 
+	Local nI
+	If Len(aValoresFaltantes) > 0
 		For nI := 1 To Len(aValoresFaltantes)
 			cValoresTexto += aValoresFaltantes[nI]
 			cValoresTexto += ' '
@@ -159,14 +165,16 @@ Static Function insertDb(aValores, oJanela)
 	DBGOTOP()
 
 	RecLock("SA2", .T.)
-    A2_COD := aValores[1][1]     // Código
-    A2_NOME := aValores[2][1]      // Fantasia
-    A2_LOJA := aValores[3][1]      // Loja
-    A2_TIPO := Left(aValores[8][1], 1)             // Tipo 
-    A2_END := aValores[6][1]       // Endereço
-    A2_EST := aValores[4][1]       // Estado
-    A2_MUN := aValores[5][1]       // Município
-    A2_NREDUZ := aValores[7][1]   
+	A2_COD := aValores[1][1]     // Código
+	A2_NOME := aValores[3][1]      // Fantasia
+	A2_LOJA := aValores[2][1]      // Loja
+	A2_TIPO := Left(aValores[8][1], 1)             // Tipo
+	A2_END := aValores[6][1]       // Endereço
+	A2_EST := aValores[4][1]       // Estado
+	A2_MUN := aValores[5][1]       // Município
+	A2_NREDUZ := aValores[7][1] // Razao social
+	A2_CGC := aValoresN[1][1] // codigo/cpf
+	A2_COD_MUN := aValoresN[2][1] // codigo municipio
 	MsUnlock()
 
 	SA2->(dbCloseArea())
@@ -187,6 +195,7 @@ Static Function update(cIdLinha)
 	Local aEstados := FWGetSX5("12")
 	Local aEstadosSiglas := {}
 	Local aEstados2 := {}
+	Local aMunicipios := {} 
 	Local oLoja
 	Local oCodigo
 	Local oNFantasia
@@ -205,7 +214,7 @@ Static Function update(cIdLinha)
 
 
 
-	
+
 
 	oCodigo       := TGet():New( 0, 1, {|u|if(PCount()==0,aValores[1][1],aValores[1][1]:=u)},oJanela, 096, 009, "@N 9999999999",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValores[1][1],,,,,,,aValores[1][2],1,,,,.T.,)
 
@@ -221,7 +230,7 @@ Static Function update(cIdLinha)
 	oEndereco     := TGet():New( 105, 1, {|u|if(PCount()==0,aValores[6][1],aValores[6][1]:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValores[6][1],,,,,,, aValores[6][2],1,,,,.T.,)
 
 	oRazaoSocial  := TGet():New( 125, 1, {|u|if(PCount()==0,aValores[7][1],aValores[7][1]:=u)}, oJanela, 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValores[7][1],,,,,,,aValores[7][2],1,,,,.T.,)
-	
+
 	//cTipo		  := TSay():New( 145, 1, {||'Tipo'}, oTFolder:aDialogs[1] , , , , , , .T., ,,,, ,, ,,, ,,  )
 	oTipo 		  := TComboBox():New( 150, 1, {|u|if(PCount()>0,aValores[8][1]:=u,aValores[8][1])}, aTipos, 100, , oJanela, , , , , , .T., ,, , , , , , , aValores[8][1], aValores[8][2], 1, , )
 	oTipo:Select(AScan(aTiposVerificacao, SA2->A2_TIPO))
@@ -237,13 +246,12 @@ Static Function update(cIdLinha)
 RETURN
 
 
-
 Static Function updateDb(recno, aValores, oJanela)
 	Local aValoresFaltantes := verificaValores(aValores)
 	Local cValoresTexto := ''
 	Local cQryUpd
-	Local nI 
-	If Len(aValoresFaltantes) > 0 
+	Local nI
+	If Len(aValoresFaltantes) > 0
 		For nI := 1 To Len(aValoresFaltantes)
 			cValoresTexto += aValoresFaltantes[nI]
 			cValoresTexto += ' '
@@ -282,7 +290,6 @@ Static Function updateDb(recno, aValores, oJanela)
 
 
 RETURN
-
 
 
 Static Function delete()
@@ -383,8 +390,6 @@ Static Function view()
 RETURN
 
 
-//nome tipo cpf/cgc
-
 Static Function verificaValores(aValores)
 	Local aNomeValores := {}
 	Local nI
@@ -404,50 +409,83 @@ RETURN aNomeValores
 
 Static Function PRINTGRAPH()
 
-Local oReport as Object
-Local oSection as Object
+	Local oReport as Object
+	Local oSection as Object
 
-//Classe TREPORT
-oReport := TReport():New('Relatório',"Fornecedores",/*cPerg*/,{|oReport|ReportPrint(oReport,oSection)})
+	//Classe TREPORT
+	oReport := TReport():New('Relatório',"Fornecedores",/*cPerg*/,{|oReport|ReportPrint(oReport,oSection)})
 
-//Seção 1 
-oSection := TRSection():New(oReport,'Fornecedores')
+	//Seção 1
+	oSection := TRSection():New(oReport,'Fornecedores')
 
-//Definição das colunas de impressão da seção 1
-TRCell():New(oSection, "A2_NOME" , "TRB", "Nome", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
-TRCell():New(oSection, "A2_TIPO", "TRB", "Tipo" , /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
-TRCell():New(oSection, "A2_CGC" , "TRB", "CGC/CPF"    , /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	//Definição das colunas de impressão da seção 1
+	TRCell():New(oSection, "A2_NOME" , "TRB", "Nome", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TIPO", "TRB", "Tipo" , /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CGC" , "TRB", "CGC/CPF"    , '@R 999.999.999-99', /*Tamanho*/,  , /*{|| code-block de impressao }*/)
 
-//Definição da collection
-//oColl:=TRCollection():New("TOTAL UF", "COUNT", /*oBreak*/,"Total POR UF",;
-///*cPicture*/, /*uFormula*/ oSection:Cell("A1_COD"), /*.lEndSection.*/ .F.,;
-///*.lEndReport.*/ .T., /*oParent*/ oSection, /*bCondition*/,;
-///*uContent*/ oSection:Cell("A1_EST") ) 
+	//Definição da collection
+	//oColl:=TRCollection():New("TOTAL UF", "COUNT", /*oBreak*/,"Total POR UF",;
+		///*cPicture*/, /*uFormula*/ oSection:Cell("A1_COD"), /*.lEndSection.*/ .F.,;
+		///*.lEndReport.*/ .T., /*oParent*/ oSection, /*bCondition*/,;
+		///*uContent*/ oSection:Cell("A1_EST") )
 
-oReport:PrintGraphic()
-oReport:PrintDialog()
+	//oReport:PrintGraphic()
+	oReport:PrintDialog()
 
 Return
 
 Static Function ReportPrint(oReport,oSection)
 
-#IFDEF TOP
+	#IFDEF TOP
 
-    Local cAlias := "TRB"
+		Local cAlias := "TRB"
 
-    BEGIN REPORT QUERY oSection
+		BEGIN REPORT QUERY oSection
 
-        BeginSql alias cAlias
+			BeginSql alias cAlias
             SELECT A2_NOME,A2_TIPO,A2_CGC
             FROM %table:SA2% 
-        EndSql
+			WHERE %notdel%
+			EndSql
 
-    END REPORT QUERY oSection 
+		END REPORT QUERY oSection
 
-    //oSection:aCollection[1]:SetGraphic(4,"UF")
-    oSection:PrintGraphic()
-    oSection:Print()
+		//oSection:aCollection[1]:SetGraphic(4,"UF")
+		oSection:PrintGraphic()
+		oSection:Print()
 
-#ENDIF
+	#ENDIF
 
 return
+
+
+Static Function verificaCgc(oTipo, oCGC)
+	Local nTipo := oTipo:nAt
+	If nTipo == 1
+	oCGC:Picture := "@R 999.999.999-99"
+
+	Else
+	oCGC:Picture := "@R 99.999.999/9999-99"
+
+	Endif
+
+RETURN
+
+Static Function getMunicipios(oEstado, oCodMun)
+	Local cQuery
+	Local cEstado := AllTrim(FWGetSX5("12")[oEstado:nAt][3])
+	Local aMunicipios := {}
+	Local aMunicipiosTratado := {}
+	Local nI
+
+
+	cQuery := "SELECT CC2_MUN,CC2_CODMUN FROM "+ RetSqlName("CC2") + " WHERE CC2_EST LIKE '" + cEstado + "'"
+	TCSqlToArr( cQuery, aMunicipios, , ,)
+
+	For nI := 1 to len(aMunicipios)
+		aMunicipiosTratado[nI] := AllTrim(aMunicipios[nI][1]) + ' - '  + aMunicipios[nI][2]
+	Next
+
+	oCodMun:setItems(aMunicipiosTratado)
+
+RETURN
