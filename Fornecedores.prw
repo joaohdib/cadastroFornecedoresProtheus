@@ -90,6 +90,7 @@ Static Function insert()
 	Local aNaoSim	:= {"1 - Sim", "2 - Não"}
 	Local oPVinculo := getOpVinculo()
 	Local aCalcsIRFF := {"1 - Normal", "2 - IRFF Baixa", "3 - Simples", "4 - Empresa Individual"}
+	Local aInovaut := {"1 - Participa", "2 - Não Participa", "3 - Convidar"}
 	Local aTipos := {"F - Físico", "J - Jurídico"}
 	Local aContr := {"J - Jurídico", "F - Pessoa Fisica", "L - Familiar"}
 	Local aPisCof := {'1 - Legado', '2 - ICMS e IPI', '3 - ICMS', '4 - IPI', '5 - Nenhum', '6 - Soma IPI'}
@@ -100,7 +101,9 @@ Static Function insert()
 		{{'','CPF/CNPJ'}, {'','Código Município'}, {'', 'Telefone'}, {'', 'RG/Ced.Estr.'}, {'', 'Ins. Estad.'}, {'', 'Ins. Municip.'}, {'', 'DDI'}, {'','País'}, {'','DDD'},;
 		{'','Descr. País'},{'','Departamento'},{'','Email'},{'','Homepage'},{'','TELEX'},{'','END. COMPLEMENTAR'},{'','Bloqueado'},{'','Complemento'},{'','Forn.Mailing'}, {'','Cod CBO'},{'','Cod CNAE'},;
 		{'','Banco'}, {'','Cod. Agência'}, {'','Cta Corrente'}, {'','Natureza'},{'','Cond. Pagto'}, {'','CodAdm'}, {'','Forma de pagamento'},{'','Dv Cta Cnab'},{'','DV Ag Cnab'},;
-		{'', 'Tp.Contr.Soc'}, {'', 'Recolhe ISS'}, {'', 'Cod. Mun. ZF'}, {'', 'Calc. INSS'}, {'', 'Tipo Pessoa'}, {'', 'País Bacen'}, {'','Tipo Escr.'}, {'', 'Grp. Tribut.'}, {'', 'Rec. PIS'}, {'', 'Rec.CSLL'}, {'', 'Rec.COFINS'},{'','Cálc. IRRF'},{'','P. Vinculo'},{Date(),'Dt Ini Vincu'},{Date(),'Dt Fim Vincu'}, {'', 'Rec. FACS'}, {'', 'Contribuinte'}, {'', 'Rec. FABOV'}, {'', 'Ded. PIS/COF'}, {'', 'Rec. Famad'}, {'', 'Reg. CPOM'}, {'', 'SitEspRes BH'}, {'', 'Tp. Lograd'}, {'', 'TPJ'}}
+		{'', 'Tp.Contr.Soc'}, {'', 'Recolhe ISS'}, {'', 'Cod. Mun. ZF'}, {'', 'Calc. INSS'}, {'', 'Tipo Pessoa'}, {'', 'País Bacen'}, {'','Tipo Escr.'}, {'', 'Grp. Tribut.'}, {'', 'Rec. PIS'}, {'', 'Rec.CSLL'}, {'', 'Rec.COFINS'},{'','Cálc. IRRF'},{'','P. Vinculo'},{Date(),'Dt Ini Vincu'},{Date(),'Dt Fim Vincu'}, {'', 'Rec. FACS'},;
+		{'', 'Contribuinte'}, {'', 'Rec. FABOV'}, {'', 'Ded. PIS/COF'}, {'', 'Rec. Famad'}, {'', 'Reg. CPOM'}, {'', 'SitEspRes BH'}, {'', 'Tp. Lograd'}, {'', 'TPJ'}, {Date(),'Dt. Conv'}, {'','Contr TARE?'}, {'','Rec. FETHAB'}, {'','Vlr. Min. IR'}, {'', 'Inc.Prd.Leit'}, {'','Fome Zero'}, {'','IRRF Prog'}, {'','Inovar Auto'}, {'','Nome Resp.'};
+		}
 	Local aMunicipios := {}
 	Local aNaturezas  := getNatureza()
 	Local aCondominios := getCondominio()
@@ -254,9 +257,19 @@ Static Function insert()
 
 	oTpj       := TComboBox():New( 030, 200, {|u|if(PCount()>0,aValoresN[53][1]:=u,aValoresN[53][1])}, aTpj, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[53][1], aValoresN[53][2], 1, , )
 
+	oDtConv    := TGet():New( 060, 200, {|u| if(PCount()==0, aValoresN[54][1], aValoresN[54][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@D", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[54][2],1,,,,.T.,)
 
+	oCTare     := TComboBox():New( 090, 200, {|u|if(PCount()>0,aValoresN[55][1]:=u,aValoresN[55][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[55][1], aValoresN[55][2], 1, , )
 
+	oRecFet    := TComboBox():New( 120, 200, {|u|if(PCount()>0,aValoresN[56][1]:=u,aValoresN[56][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[56][1], aValoresN[56][2], 1, , )
 
+	oFomeZer   := TComboBox():New( 150, 200, {|u|if(PCount()>0,aValoresN[57][1]:=u,aValoresN[57][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[57][1], aValoresN[57][2], 1, , )
+
+	oIRProg    := TComboBox():New( 180, 200, {|u|if(PCount()>0,aValoresN[58][1]:=u,aValoresN[58][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[58][1], aValoresN[58][2], 1, , )
+
+	oInovaut   := TComboBox():New( 210, 200, {|u|if(PCount()>0,aValoresN[59][1]:=u,aValoresN[59][1])}, aInovaut, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[59][1], aValoresN[59][2], 1, , )
+
+	oNomResp   := TGet():New( 240, 200, {|u| if(PCount()==0, aValoresN[60][1], aValoresN[60][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[60][2],1,,,,.T.,)
 
 	/////////////////////// BOTÃO 'Inserir' ///////////////////////
 	oButton3      := TButton():Create(oJanela, 340 ,1,"Inserir",{||insertDb(aValores, aValoresN, oJanela)},75,20,,,,.T.,,,,,,)
@@ -335,7 +348,6 @@ Static Function insertDb(aValores, aValoresN, oJanela)
 	A2_RECPIS  := Left(aValoresN[38][1],1)
 	A2_RECCSLL := Left(aValoresN[39][1],1)
 	A2_RECCOFI := Left(aValoresN[40][1],1)
-
 	A2_CALCIRF := Left(aValoresN[41][1],1)
 	A2_VINCULO := aValoresN[42][1]
 	A2_DTINIV  := aValoresN[43][1]
@@ -349,6 +361,14 @@ Static Function insertDb(aValores, aValoresN, oJanela)
 	A2_SITESBH := Left(aValoresN[51][1],1)
 	A2_TPLOGR  := aValoresN[52][1]
 	A2_TPJ	   := Left(aValoresN[53][1],1)
+
+	A2_DTCONV  := aValoresN[54][1]
+	A2_SITESBH := Left(aValoresN[55][1],1)
+	A2_RECFET  := Left(aValoresN[56][1],1)
+	A2_FOMEZER := Left(aValoresN[57][1],1)
+	A2_IRPROG  := Left(aValoresN[58][1],1)
+	A2_INOVAUT := Left(aValoresN[59][1],1)
+	A2_NOMRESP := aValoresN[60][1]
 
 	MsUnlock()
 
