@@ -8,7 +8,7 @@
 //------------------------
 Autor: João Henrique Dib
 Projeto: Tarefa de criação de rotina para trabalhar com a tabela SA2
-15/05/2024
+22/05/2024
 //------------------------
 */
 
@@ -59,7 +59,7 @@ User Function tarefaF()
 	/////////////////////// BOTÕES ///////////////////////
 	oButton1 := TButton():Create(oMsDialog,15,581,"Inserir",{||insert()},75,20,,,,.T.,,,,,,)
 
-	oButton2 := TButton():Create(oMsDialog,45,581,"Editar",{||update(SA2->A2_COD)},75,20,,,,.T.,,,,,,)
+	oButton2 := TButton():Create(oMsDialog,45,581,"Editar",{||update()},75,20,,,,.T.,,,,,,)
 
 	oButton3 := TButton():Create(oMsDialog,75,581,"Deletar",{||delete()},75,20,,,,.T.,,,,,,)
 
@@ -82,38 +82,117 @@ RETURN
 
 
 Static Function insert()
+	Local oJanela  := TDialog():New(0, 0, 730, 1100, 'Cadastro de fornecedores', , , , , CLR_BLACK, CLR_WHITE, , , .T.)
+	Local nNumero := 0
+
 	Local aTFolder := { 'Cadastrais', 'Adm/Fin.', 'Fiscais', 'Compras', 'Direitos autorais', 'TMS', 'Residente Exterior', 'Autônomos', 'Outros' }
 	Local aEstados := FWGetSX5("12")
-	Local aPaises 	:= trataPaises()
+	Local aPaises := trataPaises()
 	Local aEstados2 := {}
-	Local aSimNao	:= {"2 - Não", "1 - Sim"}
-	Local aNaoSim	:= {"1 - Sim", "2 - Não"}
+	Local aSimNao := { "2 - Não", "1 - Sim" }
+	Local aNaoSim := { "1 - Sim", "2 - Não" }
 	Local oPVinculo := getOpVinculo()
-	Local aCalcsIRFF := {"1 - Normal", "2 - IRFF Baixa", "3 - Simples", "4 - Empresa Individual"}
-	Local aInovaut := {"1 - Participa", "2 - Não Participa", "3 - Convidar"}
-	Local aTipos := {"F - Físico", "J - Jurídico"}
-	Local aContr := {"J - Jurídico", "F - Pessoa Fisica", "L - Familiar"}
-	Local aPisCof := {'1 - Legado', '2 - ICMS e IPI', '3 - ICMS', '4 - IPI', '5 - Nenhum', '6 - Soma IPI'}
-	Local aValores := {{'','Código'},{'','Loja'},{'','Nome Fantasia'},{'','Estado'},{'','Municipio'},{'','Endereço'},{'','Razão Social'}, {'','Tipo'}}
-	Local aSitEspRes := {'1 - Ex Pr bde Ser', '2 - Pr de Ser c/ Ded', '3 - Con Civ', '4 - Ag de Tu/Adm Fun', '5 - Pro e Pub/Int', '6 - Pro e Pub/Int Is', '7 - Não In/Re/Rep'}
-	Local aTpj := {'1 - ME - Micro Empresa', '2 - EPP - Empresas de Pequeno Porte', '3 - MEI - Microempreendedor Individual', '4 - Cooperativa', '5 - Não optante'}
-	Local aValoresN := ;
-		{{'','CPF/CNPJ'}, {'','Código Município'}, {'', 'Telefone'}, {'', 'RG/Ced.Estr.'}, {'', 'Ins. Estad.'}, {'', 'Ins. Municip.'}, {'', 'DDI'}, {'','País'}, {'','DDD'},;
-		{'','Descr. País'},{'','Departamento'},{'','Email'},{'','Homepage'},{'','TELEX'},{'','END. COMPLEMENTAR'},{'','Bloqueado'},{'','Complemento'},{'','Forn.Mailing'}, {'','Cod CBO'},{'','Cod CNAE'},;
-		{'','Banco'}, {'','Cod. Agência'}, {'','Cta Corrente'}, {'','Natureza'},{'','Cond. Pagto'}, {'','CodAdm'}, {'','Forma de pagamento'},{'','Dv Cta Cnab'},{'','DV Ag Cnab'},;
-		{'', 'Tp.Contr.Soc'}, {'', 'Recolhe ISS'}, {'', 'Cod. Mun. ZF'}, {'', 'Calc. INSS'}, {'', 'Tipo Pessoa'}, {'', 'País Bacen'}, {'','Tipo Escr.'}, {'', 'Grp. Tribut.'}, {'', 'Rec. PIS'}, {'', 'Rec.CSLL'}, {'', 'Rec.COFINS'},{'','Cálc. IRRF'},{'','P. Vinculo'},{Date(),'Dt Ini Vincu'},{Date(),'Dt Fim Vincu'}, {'', 'Rec. FACS'},;
-		{'', 'Contribuinte'}, {'', 'Rec. FABOV'}, {'', 'Ded. PIS/COF'}, {'', 'Rec. Famad'}, {'', 'Reg. CPOM'}, {'', 'SitEspRes BH'}, {'', 'Tp. Lograd'}, {'', 'TPJ'}, {Date(),'Dt. Conv'}, {'','Contr TARE?'}, {'','Rec. FETHAB'}, {'','Vlr. Min. IR'}, {'', 'Inc.Prd.Leit'}, {'','Fome Zero'}, {'','IRRF Prog'}, {'','Inovar Auto'}, {'','Nome Resp.'};
+	Local aCalcsIRFF := { "1 - Normal", "2 - IRFF Baixa", "3 - Simples", "4 - Empresa Individual" }
+	Local aInovaut := { "1 - Participa", "2 - Não Participa", "3 - Convidar" }
+	Local aTipos := { "F - Físico", "J - Jurídico" }
+	Local aContr := { "J - Jurídico", "F - Pessoa Fisica", "L - Familiar" }
+	Local aPisCof := { '1 - Legado', '2 - ICMS e IPI', '3 - ICMS', '4 - IPI', '5 - Nenhum', '6 - Soma IPI' }
+	Local aValores := { ;
+		{'', 'Código'}, ;
+		{'', 'Loja'}, ;
+		{'', 'Nome Fantasia'}, ;
+		{'', 'Estado'}, ;
+		{'', 'Municipio'}, ;
+		{'', 'Endereço'}, ;
+		{'', 'Razão Social'}, ;
+		{'', 'Tipo'} ;
 		}
+
+	Local aSitEspRes := { '1 - Ex Pr bde Ser', '2 - Pr de Ser c/ Ded', '3 - Con Civ', '4 - Ag de Tu/Adm Fun', '5 - Pro e Pub/Int', '6 - Pro e Pub/Int Is', '7 - Não In/Re/Rep' }
+	Local aTpj := { '1 - ME - Micro Empresa', '2 - EPP - Empresas de Pequeno Porte', '3 - MEI - Microempreendedor Individual', '4 - Cooperativa', '5 - Não optante' }
+	Local aCivil := { "1 - Solteiro", "2 - Casado", "3 - Divorciado", "4 - Viuvo", "5 - Companheiro(a)", "x - Anonimizado", "" }
+
+	Local aValoresN := { ;
+		{'', 'CPF/CNPJ'}, ;
+		{'', 'Código Município'}, ;
+		{'', 'Telefone'}, ;
+		{'', 'RG/Ced.Estr.'}, ;
+		{'', 'Ins. Estad.'}, ;
+		{'', 'Ins. Municip.'}, ;
+		{'', 'DDI'}, ;
+		{'', 'País'}, ;
+		{'', 'DDD'}, ;
+		{'', 'Descr. País'}, ;
+		{'', 'Departamento'}, ;
+		{'', 'Email'}, ;
+		{'', 'Homepage'}, ;
+		{'', 'TELEX'}, ;
+		{'', 'END. COMPLEMENTAR'}, ;
+		{'', 'Bloqueado'}, ;
+		{'', 'Complemento'}, ;
+		{'', 'Forn.Mailing'}, ;
+		{'', 'Cod CBO'}, ;
+		{'', 'Cod CNAE'}, ;
+		{'', 'Banco'}, ;
+		{'', 'Cod. Agência'}, ;
+		{'', 'Cta Corrente'}, ;
+		{'', 'Natureza'}, ;
+		{'', 'Cond. Pagto'}, ;
+		{'', 'CodAdm'}, ;
+		{'', 'Forma de pagamento'}, ;
+		{'', 'Dv Cta Cnab'}, ;
+		{'', 'DV Ag Cnab'}, ;
+		{'', 'Tp.Contr.Soc'}, ;
+		{'', 'Recolhe ISS'}, ;
+		{'', 'Cod. Mun. ZF'}, ;
+		{'', 'Calc. INSS'}, ;
+		{'', 'Tipo Pessoa'}, ;
+		{'', 'País Bacen'}, ;
+		{'', 'Tipo Escr.'}, ;
+		{'', 'Grp. Tribut.'}, ;
+		{'', 'Rec. PIS'}, ;
+		{'', 'Rec.CSLL'}, ;
+		{'', 'Rec.COFINS'}, ;
+		{'', 'Cálc. IRRF'}, ;
+		{'', 'P. Vinculo'}, ;
+		{Date(), 'Dt Ini Vincu'}, ;
+		{Date(), 'Dt Fim Vincu'}, ;
+		{'', 'Rec. FACS'}, ;
+		{'', 'Contribuinte'}, ;
+		{'', 'Rec. FABOV'}, ;
+		{'', 'Ded. PIS/COF'}, ;
+		{'', 'Rec. Famad'}, ;
+		{'', 'Reg. CPOM'}, ;
+		{'', 'SitEspRes BH'}, ;
+		{'', 'Tp. Lograd'}, ;
+		{'', 'TPJ'}, ;
+		{Date(), 'Dt. Conv'}, ;
+		{'', 'Contr TARE?'}, ;
+		{'', 'Rec. FETHAB'}, ;
+		{'', 'Vlr. Min. IR'}, ;
+		{'', 'Inc.Prd.Leit'}, ;
+		{'', 'Fome Zero'}, ;
+		{'', 'IRRF Prog'}, ;
+		{'', 'Inovar Auto'}, ;
+		{'', 'Nome Resp.'}, ;
+		{'', 'Contato'}, ;
+		{'', 'Transp.'}, ;
+		{'', '1a Compra'}, ;
+		{'', 'Ult Compra'}, ;
+		{'', 'Estado Civil'} ;
+		}
+
 	Local aMunicipios := {}
-	Local aNaturezas  := getNatureza()
+	Local aNaturezas := getNatureza()
 	Local aCondominios := getCondominio()
-	Local aCodAdms	  := getCodAdm()
-	Local aPagtos	:= getPagtos()
-	Local aTipoPessoa := {"CI - Comercio/Industria", "PF - Pessoa Fisica", "OS - Prestacao de Servico"}
-	Local aZF	:= getZF()
+	Local aCodAdms := getCodAdm()
+	Local aPagtos := getPagtos()
+	Local aTipoPessoa := { "CI - Comercio/Industria", "PF - Pessoa Fisica", "OS - Prestacao de Servico" }
+	Local aZF := getZF()
 	Local OPFisica
 	Local nNumero
-	Local oJanela  := TDialog():New(0, 0, 730, 1100,'Cadastro de fornecedores',,,,,CLR_BLACK,CLR_WHITE,,,.T.)
+
+	Local oTFolder := TFolder():New(0, 0, aTFolder, , oJanela, , , , .T., , 551, 730)
 
 
 
@@ -155,7 +234,7 @@ Static Function insert()
 
 	oRazaoSocial  := TGet():New( 125, 001, {|u|if(PCount()==0,aValores[7][1],aValores[7][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValores[7][1],,,,,,,aValores[7][2],1,,,,.T.,)
 
-	oDdi          := TGet():New( 125, 100, {|u|if(PCount()==0,aValoresN[7][1],aValoresN[7][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 999999",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValoresN[7][1],,,,,,,aValoresN[7][2],1,,,,.T.,)
+	oDdi          := TGet():New( 125, 100, {|u|if(PCount()==0,aValoresN[8][1],aValoresN[8][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 999999",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValoresN[8][1],,,,,,,aValoresN[8][2],1,,,,.T.,)
 
 	oDdd          := TGet():New( 150, 100, {|u|if(PCount()==0,aValoresN[9][1],aValoresN[9][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 999",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValoresN[9][1],,,,,,,aValoresN[9][2],1,,,,.T.,)
 
@@ -181,10 +260,7 @@ Static Function insert()
 
 	oCbo		  := TGet():New( 160, 200, {|u| if(PCount()==0, aValoresN[19][1], aValoresN[19][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 9999999", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValoresN[19][1],,,,,,, aValoresN[19][2],1,,,,.T.,)
 
-	oCnae 		  := TGet():New( 180, 200, {|u| if(PCount()==0, aValoresN[20][1], aValoresN[20][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 9999-9/9999", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValoresN[20][1],,,,,,, aValoresN[20][2],1,,,,.T.,)
-	oCnae:lReadOnly := .T.
-
-	oTipo 		  := TComboBox():New( 150, 001, {|u|if(PCount()>0,aValores[8][1]:=u,aValores[8][1])}, aTipos, 100, , oTFolder:aDialogs[1], ,{||verificaCgc(oTipo, @oCGC, @oCbo, @oCnae)} , , , , .T., ,, , , , , , , aValores[8][1], aValores[8][2], 1, , )
+	oCnae 		  := TGet():New( 180, 200, {|u| if(PCount()==0, aValoresN[20][1], aValoresN[20][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 9999-9/9999", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,, aValoresN[20][1],,,,,,, aValoresN[20][2],1,,,,.T.,)
 
 
 	/////////////////////// ABA 'Adm/Fin.' ///////////////////////
@@ -263,15 +339,31 @@ Static Function insert()
 
 	oRecFet    := TComboBox():New( 120, 200, {|u|if(PCount()>0,aValoresN[56][1]:=u,aValoresN[56][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[56][1], aValoresN[56][2], 1, , )
 
-	oFomeZer   := TComboBox():New( 150, 200, {|u|if(PCount()>0,aValoresN[57][1]:=u,aValoresN[57][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[57][1], aValoresN[57][2], 1, , )
+	oVlrMinIr  := TComboBox():New( 150, 200, {|u|if(PCount()>0,aValoresN[57][1]:=u,aValoresN[57][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[57][1], aValoresN[57][2], 1, , )
 
-	oIRProg    := TComboBox():New( 180, 200, {|u|if(PCount()>0,aValoresN[58][1]:=u,aValoresN[58][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[58][1], aValoresN[58][2], 1, , )
+	oIncPdrLei := TComboBox():New( 180, 200, {|u|if(PCount()>0,aValoresN[58][1]:=u,aValoresN[58][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[58][1], aValoresN[58][2], 1, , )
 
-	oInovaut   := TComboBox():New( 210, 200, {|u|if(PCount()>0,aValoresN[59][1]:=u,aValoresN[59][1])}, aInovaut, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[59][1], aValoresN[59][2], 1, , )
+	oFomeZer   := TComboBox():New( 210, 200, {|u|if(PCount()>0,aValoresN[59][1]:=u,aValoresN[59][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[59][1], aValoresN[59][2], 1, , )
 
-	oNomResp   := TGet():New( 240, 200, {|u| if(PCount()==0, aValoresN[60][1], aValoresN[60][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[60][2],1,,,,.T.,)
+	oIRProg    := TComboBox():New( 240, 200, {|u|if(PCount()>0,aValoresN[60][1]:=u,aValoresN[60][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[60][1], aValoresN[60][2], 1, , )
+
+	oInovaut   := TComboBox():New( 270, 200, {|u|if(PCount()>0,aValoresN[61][1]:=u,aValoresN[61][1])}, aInovaut, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[61][1], aValoresN[61][2], 1, , )
+
+	oNomResp   := TGet():New( 300, 200, {|u| if(PCount()==0, aValoresN[62][1], aValoresN[62][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[62][2],1,,,,.T.,)
+
+	/////////////////////// ABA 'Compras' ///////////////////////
+
+	oContato   := TGet():New( 000, 001, {|u| if(PCount()==0, aValoresN[63][1], aValoresN[63][1]:=u)}, oTFolder:aDialogs[4], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[63][2],1,,,,.T.,)
+
+	oTransp    := TComboBox():New( 030, 001, {|u|if(PCount()>0,aValoresN[64][1]:=u,aValoresN[64][1])}, getTransportadora(), 100, , oTFolder:aDialogs[4], ,, , , , .T., ,, , , , , , , aValoresN[64][1], aValoresN[64][2], 1, , )
+
+	/////////////////////// ABA 'Compras' ///////////////////////
+
+	oCivil     := TComboBox():New( 000, 001, {|u|if(PCount()>0,aValoresN[67][1]:=u,aValoresN[67][1])}, aCivil, 100, , oTFolder:aDialogs[5], ,, , , , .T., ,, , , , , , , aValoresN[67][1], aValoresN[67][2], 1, , )
 
 	/////////////////////// BOTÃO 'Inserir' ///////////////////////
+	oTipo 		  := TComboBox():New( 150, 001, {|u|if(PCount()>0,aValores[8][1]:=u,aValores[8][1])}, aTipos, 100, , oTFolder:aDialogs[1], ,{||verificaCgc(oTipo, @oCGC, @oCbo, @oCnae, @oCivil)} , , , , .T., ,, , , , , , , aValores[8][1], aValores[8][2], 1, , )
+
 	oButton3      := TButton():Create(oJanela, 340 ,1,"Inserir",{||insertDb(aValores, aValoresN, oJanela)},75,20,,,,.T.,,,,,,)
 
 	oJanela:Activate(,,,.T.,,,)
@@ -361,14 +453,22 @@ Static Function insertDb(aValores, aValoresN, oJanela)
 	A2_SITESBH := Left(aValoresN[51][1],1)
 	A2_TPLOGR  := aValoresN[52][1]
 	A2_TPJ	   := Left(aValoresN[53][1],1)
-
 	A2_DTCONV  := aValoresN[54][1]
-	A2_SITESBH := Left(aValoresN[55][1],1)
+	A2_CTARE := Left(aValoresN[55][1],1)
 	A2_RECFET  := Left(aValoresN[56][1],1)
-	A2_FOMEZER := Left(aValoresN[57][1],1)
-	A2_IRPROG  := Left(aValoresN[58][1],1)
-	A2_INOVAUT := Left(aValoresN[59][1],1)
-	A2_NOMRESP := aValoresN[60][1]
+	A2_MINIRF  := Left(aValoresN[57][1],1)
+	A2_INCLTMG := Left(aValoresN[58][1],1)
+	A2_FOMEZER := Left(aValoresN[59][1],1)
+	A2_IRPROG  := Left(aValoresN[60][1],1)
+	A2_INOVAUT := Left(aValoresN[61][1],1)
+	A2_NOMRESP := aValoresN[62][1]
+	//
+	A2_CONTATO := aValoresN[63][1]
+	A2_TRANSP  := aValoresN[64][1]
+	//65
+	//66
+	A2_CIVIL   := Left(aValoresN[67][1],1)
+
 
 	MsUnlock()
 
@@ -381,38 +481,119 @@ Static Function insertDb(aValores, aValoresN, oJanela)
 RETURN
 
 
-Static Function update(cIdLinha)
-	Local oJanela  := TDialog():New(0, 0, 730, 1100,'Cadastro de fornecedores',,,,,CLR_BLACK,CLR_WHITE,,,.T.)
+Static Function update()
+	Local oJanela  := TDialog():New(0, 0, 730, 1100, 'Cadastro de fornecedores', , , , , CLR_BLACK, CLR_WHITE, , , .T.)
 	Local nNumero := 0
+
 	Local aTFolder := { 'Cadastrais', 'Adm/Fin.', 'Fiscais', 'Compras', 'Direitos autorais', 'TMS', 'Residente Exterior', 'Autônomos', 'Outros' }
-	Local aValores := {{SA2->A2_COD,'Código'},{SA2->A2_LOJA,'Loja'},{SA2->A2_NOME,'Nome Fantasia'},{SA2->A2_EST,'Estado'},{SA2->A2_MUN,'Municipio'},{SA2->A2_END,'Endereço'},{SA2->A2_NREDUZ,'Razão Social'}, {A2_TIPO,'Tipo'}}
-	Local aValoresN := {{SA2->A2_CGC,'CPF/CNPJ'},{'','Código Município'}, {SA2->A2_TEL, 'Telefone'},{SA2->A2_PFISICA, 'RG/Ced.Estr.'}, {SA2->A2_INSCR, 'Ins. Estad.'}, {SA2->A2_INSCRM, 'Ins. Municip.'}, {SA2->A2_DDI, 'DDI'}, {SA2->A2_PAIS,'País'}, {SA2->A2_DDD,'DDD'},;
-		{'','Descr. País'},{SA2->A2_DEPTO,'Departamento'},{SA2->A2_EMAIL,'Email'},{SA2->A2_HPAGE,'Homepage'},{A2_TELEX,'TELEX'},{SA2->A2_ENDCOMP,'END. COMPLEMENTAR'},{SA2->A2_MSBLQL,'Bloqueado'},{SA2->A2_COMPLEM,'Complemento'},{SA2->A2_FORNEMA,'Forn.Mailing'}, {SA2->A2_CBO,'Cod CBO'},{SA2->A2_CNAE,'Cod CNAE'},;
-		{SA2->A2_BANCO,'Banco'}, {SA2->A2_AGENCIA,'Cod. Agência'}, {SA2->A2_NUMCON,'Cta Corrente'}, {SA2->A2_NATUREZ,'Natureza'}, {SA2->A2_COND,'Cond. Pagto'}, {SA2->A2_CODADM,'CodAdm'}, {SA2->A2_FORMPAG,'Forma de pagamento'}, {SA2->A2_DVCTA,'Dv Cta Cnab'}, {SA2->A2_DVAGE,'DV Age Cnab'},;
-		{SA2->A2_TIPORUR, 'Tp.Contr.Soc'}, {SA2->A2_RECISS, 'Recolhe ISS'}, {SA2->A2_CODMUN, 'Cod. Mun. ZF'}, {SA2->A2_RECINSS, 'Calc. INSS'}, {SA2->A2_TPESSOA, 'Tipo Pessoa'}, {SA2->A2_CODPAIS, 'País Bacen'}, {SA2->A2_TPISSRS,'Tipo Escr.'}, {SA2->A2_GRPTRIB, 'Grp. Tribut.'}, {SA2->A2_RECPIS, 'Rec. PIS'},;
-		{SA2->A2_RECCSLL, 'Rec.CSLL'}, {SA2->A2_RECCOFI, 'Rec.COFINS'},{SA2->A2_CALCIRF, 'CÁLC. IRRF'}, {SA2->A2_VINCULO, 'P. VINCULO'}, {A2_DTINIV, 'DT INI VINCU'}, {A2_DTFIMV, 'DT FIM VINCU'}, {SA2->A2_RFACS, 'REC. FACS'}, {SA2->A2_CONTRIB, 'CONTRIBUINTE'}, {SA2->A2_RFABOV, 'REC. FABOV'}, {SA2->A2_DEDBSPC, 'DED. PIS/COF'}, {SA2->A2_RECFMD, 'REC. FAMAD'}, {SA2->A2_CPOMSP, 'REG. CPOM'}, {SA2->A2_SITESBH, 'SITESPRES BH'}, {SA2->A2_TPLOGR, 'TP. LOGRAD'}, {SA2->A2_TPJ, 'TPJ'}}
-	Local aTipos := {"F - Físico", "J - Jurídico"}
-	Local aTpj := {'1 - ME - Micro Empresa', '2 - EPP - Empresas de Pequeno Porte', '3 - MEI - Microempreendedor Individual', '4 - Cooperativa', '5 - Não optante'}
-	Local aSitEspRes := {'1 - Ex Pr bde Ser', '2 - Pr de Ser c/ Ded', '3 - Con Civ', '4 - Ag de Tu/Adm Fun', '5 - Pro e Pub/Int', '6 - Pro e Pub/Int Is', '7 - Não In/Re/Rep'}
-	Local aPisCof := {'1 - Legado', '2 - ICMS e IPI', '3 - ICMS', '4 - IPI', '5 - Nenhum', '6 - Soma IPI'}
-	Local aCalcsIRFF := {"1 - Normal", "2 - IRFF Baixa", "3 - Simples", "4 - Empresa Individual"}
-	LOcal aTiposVerificacao := {"F","J"}
+
+	Local aValores := { ;
+		{SA2->A2_COD, 'Código'}, ;
+		{SA2->A2_LOJA, 'Loja'}, ;
+		{SA2->A2_NOME, 'Nome Fantasia'}, ;
+		{SA2->A2_EST, 'Estado'}, ;
+		{SA2->A2_MUN, 'Municipio'}, ;
+		{SA2->A2_END, 'Endereço'}, ;
+		{SA2->A2_NREDUZ, 'Razão Social'}, ;
+		{A2_TIPO, 'Tipo'} ;
+		}
+
+	Local aValoresN := { ;
+		{SA2->A2_CGC, 'CPF/CNPJ'}, ;
+		{'', 'Código Município'}, ;
+		{SA2->A2_TEL, 'Telefone'}, ;
+		{SA2->A2_PFISICA, 'RG/Ced.Estr.'}, ;
+		{SA2->A2_INSCR, 'Ins. Estad.'}, ;
+		{SA2->A2_INSCRM, 'Ins. Municip.'}, ;
+		{SA2->A2_DDI, 'DDI'}, ;
+		{SA2->A2_PAIS, 'País'}, ;
+		{SA2->A2_DDD, 'DDD'}, ;
+		{'', 'Descr. País'}, ;
+		{SA2->A2_DEPTO, 'Departamento'}, ;
+		{SA2->A2_EMAIL, 'Email'}, ;
+		{SA2->A2_HPAGE, 'Homepage'}, ;
+		{A2_TELEX, 'TELEX'}, ;
+		{SA2->A2_ENDCOMP, 'END. COMPLEMENTAR'}, ;
+		{SA2->A2_MSBLQL, 'Bloqueado'}, ;
+		{SA2->A2_COMPLEM, 'Complemento'}, ;
+		{SA2->A2_FORNEMA, 'Forn.Mailing'}, ;
+		{SA2->A2_CBO, 'Cod CBO'}, ;
+		{SA2->A2_CNAE, 'Cod CNAE'}, ;
+		{SA2->A2_BANCO, 'Banco'}, ;
+		{SA2->A2_AGENCIA, 'Cod. Agência'}, ;
+		{SA2->A2_NUMCON, 'Cta Corrente'}, ;
+		{SA2->A2_NATUREZ, 'Natureza'}, ;
+		{SA2->A2_COND, 'Cond. Pagto'}, ;
+		{SA2->A2_CODADM, 'CodAdm'}, ;
+		{SA2->A2_FORMPAG, 'Forma de pagamento'}, ;
+		{SA2->A2_DVCTA, 'Dv Cta Cnab'}, ;
+		{SA2->A2_DVAGE, 'DV Age Cnab'}, ;
+		{SA2->A2_TIPORUR, 'Tp.Contr.Soc'}, ;
+		{SA2->A2_RECISS, 'Recolhe ISS'}, ;
+		{SA2->A2_CODMUN, 'Cod. Mun. ZF'}, ;
+		{SA2->A2_RECINSS, 'Calc. INSS'}, ;
+		{SA2->A2_TPESSOA, 'Tipo Pessoa'}, ;
+		{SA2->A2_CODPAIS, 'País Bacen'}, ;
+		{SA2->A2_TPISSRS, 'Tipo Escr.'}, ;
+		{SA2->A2_GRPTRIB, 'Grp. Tribut.'}, ;
+		{SA2->A2_RECPIS, 'Rec. PIS'}, ;
+		{SA2->A2_RECCSLL, 'Rec.CSLL'}, ;
+		{SA2->A2_RECCOFI, 'Rec.COFINS'}, ;
+		{SA2->A2_CALCIRF, 'CÁLC. IRRF'}, ;
+		{SA2->A2_VINCULO, 'P. VINCULO'}, ;
+		{A2_DTINIV, 'DT INI VINCU'}, ;
+		{A2_DTFIMV, 'DT FIM VINCU'}, ;
+		{SA2->A2_RFACS, 'REC. FACS'}, ;
+		{SA2->A2_CONTRIB, 'Contribuinte'}, ;
+		{SA2->A2_RFABOV, 'REC. FABOV'}, ;
+		{SA2->A2_DEDBSPC, 'DED. PIS/COF'}, ;
+		{SA2->A2_RECFMD, 'REC. FAMAD'}, ;
+		{SA2->A2_CPOMSP, 'REG. CPOM'}, ;
+		{SA2->A2_SITESBH, 'SITESPRES BH'}, ;
+		{SA2->A2_TPLOGR, 'TP. LOGRAD'}, ;
+		{SA2->A2_TPJ, 'TPJ'}, ;
+		{SA2->A2_DTCONV, 'Dt. Conv'}, ;
+		{SA2->A2_CTARE, 'Contr TARE?'}, ;
+		{SA2->A2_RECFET, 'Rec. FETHAB'}, ;
+		{SA2->A2_MINIRF, 'Vlr. Min. IR'}, ;
+		{SA2->A2_INCLTMG, 'Inc.Prd.Leit'}, ;
+		{SA2->A2_FOMEZER, 'Fome Zero'}, ;
+		{SA2->A2_IRPROG, 'IRRF Prog'}, ;
+		{SA2->A2_INOVAUT, 'Inovar Auto'}, ;
+		{SA2->A2_NOMRESP, 'Nome Resp.'}, ;
+		{SA2->A2_CONTATO, 'Contato'}, ;
+		{SA2->A2_TRANSP, 'Transp.'}, ;
+		{'', '1a Compra'}, ;
+		{'', 'Ult Compra'}, ;
+		{SA2->A2_CIVIL, 'Estado Civil'} ;
+		}
+
+	Local aTipos := { "F - Físico", "J - Jurídico" }
+	Local aCivil := { "1 - Solteiro", "2 - Casado", "3 - Divorciado", "4 - Viuvo", "5 - Companheiro(a)", "x - Anonimizado", "" }
+	Local aTpj := { '1 - ME - Micro Empresa', '2 - EPP - Empresas de Pequeno Porte', '3 - MEI - Microempreendedor Individual', '4 - Cooperativa', '5 - Não optante' }
+	Local aSitEspRes := { '1 - Ex Pr bde Ser', '2 - Pr de Ser c/ Ded', '3 - Con Civ', '4 - Ag de Tu/Adm Fun', '5 - Pro e Pub/Int', '6 - Pro e Pub/Int Is', '7 - Não In/Re/Rep' }
+	Local aPisCof := { '1 - Legado', '2 - ICMS e IPI', '3 - ICMS', '4 - IPI', '5 - Nenhum', '6 - Soma IPI' }
+	Local aCalcsIRFF := { "1 - Normal", "2 - IRFF Baixa", "3 - Simples", "4 - Empresa Individual" }
+	Local aInovaut := { "1 - Participa", "2 - Não Participa", "3 - Convidar" }
+	Local aTiposVerificacao := { "F", "J" }
 	Local aEstados := FWGetSX5("12")
 	Local aEstadosSiglas := {}
 	Local aOpVinculo := getOpVinculo()
 	Local aEstados2 := {}
 	Local aMunicipios := {}
-	Local aSimNao	:= {"2 - Não", "1 - Sim"}
-	Local aNaoSim	:= {"1 - Sim", "2 - Não"}
-	Local aContr := {"J - Jurídico", "F - Pessoa Fisica", "L - Familiar"}
-	Local aNaturezas  := getNatureza()
+	Local aSimNao := { "2 - Não", "1 - Sim" }
+	Local aNaoSim := { "1 - Sim", "2 - Não" }
+	Local aContr := { "J - Jurídico", "F - Pessoa Fisica", "L - Familiar" }
+	Local aNaturezas := getNatureza()
 	Local aCondominios := getCondominio()
-	Local aCodAdms	  := getCodAdm()
-	Local aPagtos	:= getPagtos()
-	Local aPaises 	:= trataPaises()
-	Local aTipoPessoa := {"CI - Comercio/Industria", "PF - Pessoa Fisica", "OS - Prestacao de Servico"}
-	Local aZF	:= getZF()
-	Local oTFolder := TFolder():New( 0,0,aTFolder,,oJanela,,,,.T.,,551,730 )
+	Local aCodAdms := getCodAdm()
+	Local aPagtos := getPagtos()
+	Local aPaises := trataPaises()
+	Local aTransp := getTransportadora()
+	Local aTipoPessoa := { "CI - Comercio/Industria", "PF - Pessoa Fisica", "OS - Prestacao de Servico" }
+	Local aZF := getZF()
+
+	Local oTFolder := TFolder():New(0, 0, aTFolder, , oJanela, , , , .T., , 551, 730)
 
 	For nNumero := 1 to 26
 		AADD(aEstados2, aEstados[nNumero][4])
@@ -487,10 +668,6 @@ Static Function update(cIdLinha)
 	oCbo		  := TGet():New( 160, 200, {|u| if(PCount()==0, aValoresN[19][1], aValoresN[19][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 9999999", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,, aValoresN[19][1],,,,,,, aValoresN[19][2],1,,,,.T.,)
 
 	oCnae 		  := TGet():New( 180, 200, {|u| if(PCount()==0, aValoresN[20][1], aValoresN[20][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@N 9999-9/9999", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,, aValoresN[20][1],,,,,,, aValoresN[20][2],1,,,,.T.,)
-
-	oTipo 		  := TComboBox():New( 150, 001, {|u|if(PCount()>0,aValores[8][1]:=u,aValores[8][1])}, aTipos, 100, , oTFolder:aDialogs[1], ,{||verificaCgc(oTipo, @oCGC, @oCbo, @oCnae)} , , , , .T., ,, , , , , , , aValores[8][1], aValores[8][2], 1, , )
-	oTipo:Select(AScan(aTiposVerificacao, SA2->A2_TIPO))
-	verificaCgc(oTipo, @oCGC, @oCbo, @oCnae)
 
 	/////////////////////// ABA 'Adm/Fin.' ///////////////////////
 	oBanco		  := TGet():New( 000, 001, {|u|if(PCount()==0,aValoresN[21][1],aValoresN[21][1]:=u)}, oTFolder:aDialogs[2], 096, 009, "@E XXX",,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,, aValoresN[21][1],,,,,,,aValoresN[21][2],1,,,,.T.,)
@@ -584,6 +761,47 @@ Static Function update(cIdLinha)
 	oTpj       := TComboBox():New( 030, 200, {|u|if(PCount()>0,aValoresN[53][1]:=u,aValoresN[53][1])}, aTpj, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[53][1], aValoresN[53][2], 1, , )
 	selecionaVal(oTpj, SA2->A2_TPJ, aTpj)
 
+	oDtConv    := TGet():New( 060, 200, {|u| if(PCount()==0, aValoresN[54][1], aValoresN[54][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@D", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[54][2],1,,,,.T.,)
+
+	oCTare     := TComboBox():New( 090, 200, {|u|if(PCount()>0,aValoresN[55][1]:=u,aValoresN[55][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[55][1], aValoresN[55][2], 1, , )
+	selecionaNaoSim(oCTare, SA2->A2_SITESBH)
+
+	oRecFet    := TComboBox():New( 120, 200, {|u|if(PCount()>0,aValoresN[56][1]:=u,aValoresN[56][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[56][1], aValoresN[56][2], 1, , )
+	selecionaNaoSim(oRecFet, SA2->A2_RECFET)
+
+	oVlrMinIr  := TComboBox():New( 150, 200, {|u|if(PCount()>0,aValoresN[57][1]:=u,aValoresN[57][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[57][1], aValoresN[57][2], 1, , )
+	selecionaNaoSim(oVlrMinIr, SA2->A2_MINIRF)
+
+	oIncPdrLei := TComboBox():New( 180, 200, {|u|if(PCount()>0,aValoresN[58][1]:=u,aValoresN[58][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[58][1], aValoresN[58][2], 1, , )
+	selecionaNaoSim(oIncPdrLei, SA2->A2_INCLTMG)
+
+	oFomeZer   := TComboBox():New( 210, 200, {|u|if(PCount()>0,aValoresN[59][1]:=u,aValoresN[59][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[59][1], aValoresN[59][2], 1, , )
+	selecionaNaoSim(oFomeZer, SA2->A2_FOMEZER)
+
+	oIRProg    := TComboBox():New( 240, 200, {|u|if(PCount()>0,aValoresN[60][1]:=u,aValoresN[60][1])}, aNaoSim, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[60][1], aValoresN[60][2], 1, , )
+	selecionaNaoSim(oIRProg, SA2->A2_IRPROG)
+
+	oInovaut   := TComboBox():New( 270, 200, {|u|if(PCount()>0,aValoresN[61][1]:=u,aValoresN[61][1])}, aInovaut, 100, , oTFolder:aDialogs[3], ,, , , , .T., ,, , , , , , , aValoresN[61][1], aValoresN[61][2], 1, , )
+	selecionaVal(oInovaut, sa2->A2_INOVAUT, aInovaut)
+
+	oNomResp   := TGet():New( 300, 200, {|u| if(PCount()==0, aValoresN[62][1], aValoresN[62][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[62][2],1,,,,.T.,)
+
+	/////////////////////// ABA 'Compras' ///////////////////////
+
+	oContato   := TGet():New( 000, 001, {|u| if(PCount()==0, aValoresN[63][1], aValoresN[63][1]:=u)}, oTFolder:aDialogs[4], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[63][2],1,,,,.T.,)
+
+	oTransp    := TComboBox():New( 030, 001, {|u|if(PCount()>0,aValoresN[64][1]:=u,aValoresN[64][1])}, aTransp, 100, , oTFolder:aDialogs[4], ,, , , , .T., ,, , , , , , , aValoresN[64][1], aValoresN[64][2], 1, , )
+	selecionaVal(oTransp, SA2->A2_TRANSP,aTransp)
+
+	/////////////////////// ABA 'Compras' ///////////////////////
+
+	oCivil     := TComboBox():New( 000, 001, {|u|if(PCount()>0,aValoresN[67][1]:=u,aValoresN[67][1])}, aCivil, 100, , oTFolder:aDialogs[5], ,, , , , .T., ,, , , , , , , aValoresN[67][1], aValoresN[67][2], 1, , )
+	selecionaVal(oCivil, SA2->A2_CIVIL,aCivil)
+
+	oTipo  := TComboBox():New( 150, 001, {|u|if(PCount()>0,aValores[8][1]:=u,aValores[8][1])}, aTipos, 100, , oTFolder:aDialogs[1], ,{||verificaCgc(oTipo, @oCGC, @oCbo, @oCnae, @oContato)} , , , , .T., ,, , , , , , , aValores[8][1], aValores[8][2], 1, , )
+	oTipo:Select(AScan(aTiposVerificacao, SA2->A2_TIPO))
+	verificaCgc(oTipo, @oCGC, @oCbo, @oCnae, @oContato)
+
 	oButton3   := TButton():Create(oJanela,340,1,"Atualizar",{||updateDb(SA2->(RecNo()),aValores, aValoresN, oJanela)},75,20,,,,.T.,,,,,,)
 
 	oJanela:Activate(,,,.T.,,,)
@@ -669,7 +887,18 @@ Static Function updateDb(recno, aValores, aValoresN, oJanela)
 	cQryUpd += "A2_CPOMSP = '" + Left(aValoresN[50][1],1) + "', "
 	cQryUpd += "A2_SITESBH = '" + Left(aValoresN[51][1],1) + "', "
 	cQryUpd += "A2_TPLOGR = '" + aValoresN[52][1] + "', "
-	cQryUpd += "A2_TPJ = '" + Left(aValoresN[53][1],1) + "' "
+	cQryUpd += "A2_TPJ = '" + Left(aValoresN[53][1],1) + "', "
+	cQryUpd += "A2_DTCONV = '" + DtoS(aValoresN[54][1]) + "', "
+	cQryUpd += "A2_CTARE = '" + Left(aValoresN[55][1],1) + "', "
+	cQryUpd += "A2_RECFET = '" + Left(aValoresN[56][1],1) + "', "
+	cQryUpd += "A2_INCLTMG = '" + Left(aValoresN[58][1],1) + "', "
+	cQryUpd += "A2_FOMEZER = '" + Left(aValoresN[59][1],1) + "', "
+	cQryUpd += "A2_IRPROG = '" + Left(aValoresN[60][1],1) + "', "
+	cQryUpd += "A2_INOVAUT = '" + Left(aValoresN[61][1],1) + "', "
+	cQryUpd += "A2_NOMRESP = '" + aValoresN[62][1] + "', "
+	cQryUpd += "A2_CONTATO = '" + aValoresN[63][1] + "', "
+	cQryUpd += "A2_TRANSP = '" + aValoresN[64][1] + "', "
+	cQryUpd += "A2_CIVIL = '" + Left(aValoresN[67][1],1) + "' "
 	cQryUpd += "WHERE R_E_C_N_O_ = '" + cValToChar(recno) + "' "
 	cQryUpd += "AND D_E_L_E_T_ = ' '"
 
@@ -729,19 +958,93 @@ RETURN
 
 
 Static Function view()
-	Local oJanela  := TDialog():New(0, 0, 730, 1100,'Cadastro de fornecedores',,,,,CLR_BLACK,CLR_WHITE,,,.T.)
+	Local oJanela  := TDialog():New(0, 0, 730, 1100, 'Cadastro de fornecedores', , , , , CLR_BLACK, CLR_WHITE, , , .T.)
 	Local nNumero := 0
+
 	Local aTFolder := { 'Cadastrais', 'Adm/Fin.', 'Fiscais', 'Compras', 'Direitos autorais', 'TMS', 'Residente Exterior', 'Autônomos', 'Outros' }
 	Local aEstados := FWGetSX5("12")
 	Local aEstadosSiglas := {}
-	Local aValores := {{SA2->A2_COD,'Código'},{SA2->A2_LOJA,'Loja'},{SA2->A2_NOME,'Nome Fantasia'},{SA2->A2_EST,'Estado'},{SA2->A2_MUN,'Municipio'},{SA2->A2_END,'Endereço'},{SA2->A2_NREDUZ,'Razão Social'}, {SA2->A2_TIPO,'Tipo'}}
-	Local aValoresN := {{SA2->A2_CGC,'CPF/CNPJ'},{'','Código Município'}, {SA2->A2_TEL, 'Telefone'},{SA2->A2_PFISICA, 'RG/Ced.Estr.'}, {SA2->A2_INSCR, 'Ins. Estad.'}, {SA2->A2_INSCRM, 'Ins. Municip.'}, {SA2->A2_DDI, 'DDI'}, {SA2->A2_PAIS,'País'}, {SA2->A2_DDD,'DDD'},;
-		{'','Descr. País'},{SA2->A2_DEPTO,'Departamento'},{SA2->A2_EMAIL,'Email'},{SA2->A2_HPAGE,'Homepage'},{A2_TELEX,'TELEX'},{SA2->A2_ENDCOMP,'END. COMPLEMENTAR'},{SA2->A2_MSBLQL,'Bloqueado'},{SA2->A2_COMPLEM,'Complemento'},{SA2->A2_FORNEMA,'Forn.Mailing'}, {SA2->A2_CBO,'Cod CBO'},{SA2->A2_CNAE,'Cod CNAE'},;
-		{SA2->A2_BANCO,'Banco'}, {SA2->A2_AGENCIA,'Cod. Agência'}, {SA2->A2_NUMCON,'Cta Corrente'}, {SA2->A2_NATUREZ,'Natureza'}, {SA2->A2_COND,'Cond. Pagto'}, {SA2->A2_CODADM,'CodAdm'}, {SA2->A2_FORMPAG,'Forma de pagamento'}, {SA2->A2_DVCTA,'Dv Cta Cnab'}, {SA2->A2_DVAGE,'DV Age Cnab'},;
-		{SA2->A2_TIPORUR, 'Tp.Contr.Soc'}, {SA2->A2_RECISS, 'Recolhe ISS'}, {SA2->A2_CODMUN, 'Cod. Mun. ZF'}, {SA2->A2_RECINSS, 'Calc. INSS'}, {SA2->A2_TPESSOA, 'Tipo Pessoa'}, {SA2->A2_CODPAIS, 'País Bacen'}, {SA2->A2_TPISSRS,'Tipo Escr.'}, {SA2->A2_GRPTRIB, 'Grp. Tribut.'}, {SA2->A2_RECPIS, 'Rec. PIS'},;
-		{SA2->A2_RECCSLL, 'Rec.CSLL'}, {SA2->A2_RECCOFI, 'Rec.COFINS'},{SA2->A2_CALCIRF, 'CÁLC. IRRF'}, {SA2->A2_VINCULO, 'P. VINCULO'}, {A2_DTINIV, 'DT INI VINCU'}, {A2_DTFIMV, 'DT FIM VINCU'}, {SA2->A2_RFACS, 'REC. FACS'}, {SA2->A2_CONTRIB, 'CONTRIBUINTE'}, {SA2->A2_RFABOV, 'REC. FABOV'}, {SA2->A2_DEDBSPC, 'DED. PIS/COF'}, {SA2->A2_RECFMD, 'REC. FAMAD'}, {SA2->A2_CPOMSP, 'REG. CPOM'}, {SA2->A2_SITESBH, 'SITESPRES BH'}, {SA2->A2_TPLOGR, 'TP. LOGRAD'}, {SA2->A2_TPJ, 'TPJ'}}
+	Local aValores := { ;
+		{SA2->A2_COD, 'Código'}, ;
+		{SA2->A2_LOJA, 'Loja'}, ;
+		{SA2->A2_NOME, 'Nome Fantasia'}, ;
+		{SA2->A2_EST, 'Estado'}, ;
+		{SA2->A2_MUN, 'Municipio'}, ;
+		{SA2->A2_END, 'Endereço'}, ;
+		{SA2->A2_NREDUZ, 'Razão Social'}, ;
+		{SA2->A2_TIPO, 'Tipo'} ;
+		}
+	Local aValoresN := { ;
+		{SA2->A2_CGC, 'CPF/CNPJ'}, ;
+		{'', 'Código Município'}, ;
+		{SA2->A2_TEL, 'Telefone'}, ;
+		{SA2->A2_PFISICA, 'RG/Ced.Estr.'}, ;
+		{SA2->A2_INSCR, 'Ins. Estad.'}, ;
+		{SA2->A2_INSCRM, 'Ins. Municip.'}, ;
+		{SA2->A2_DDI, 'DDI'}, ;
+		{SA2->A2_PAIS, 'País'}, ;
+		{SA2->A2_DDD, 'DDD'}, ;
+		{'', 'Descr. País'}, ;
+		{SA2->A2_DEPTO, 'Departamento'}, ;
+		{SA2->A2_EMAIL, 'Email'}, ;
+		{SA2->A2_HPAGE, 'Homepage'}, ;
+		{A2_TELEX, 'TELEX'}, ;
+		{SA2->A2_ENDCOMP, 'END. COMPLEMENTAR'}, ;
+		{SA2->A2_MSBLQL, 'Bloqueado'}, ;
+		{SA2->A2_COMPLEM, 'Complemento'}, ;
+		{SA2->A2_FORNEMA, 'Forn.Mailing'}, ;
+		{SA2->A2_CBO, 'Cod CBO'}, ;
+		{SA2->A2_CNAE, 'Cod CNAE'}, ;
+		{SA2->A2_BANCO, 'Banco'}, ;
+		{SA2->A2_AGENCIA, 'Cod. Agência'}, ;
+		{SA2->A2_NUMCON, 'Cta Corrente'}, ;
+		{SA2->A2_NATUREZ, 'Natureza'}, ;
+		{SA2->A2_COND, 'Cond. Pagto'}, ;
+		{SA2->A2_CODADM, 'CodAdm'}, ;
+		{SA2->A2_FORMPAG, 'Forma de pagamento'}, ;
+		{SA2->A2_DVCTA, 'Dv Cta Cnab'}, ;
+		{SA2->A2_DVAGE, 'DV Age Cnab'}, ;
+		{SA2->A2_TIPORUR, 'Tp.Contr.Soc'}, ;
+		{SA2->A2_RECISS, 'Recolhe ISS'}, ;
+		{SA2->A2_CODMUN, 'Cod. Mun. ZF'}, ;
+		{SA2->A2_RECINSS, 'Calc. INSS'}, ;
+		{SA2->A2_TPESSOA, 'Tipo Pessoa'}, ;
+		{SA2->A2_CODPAIS, 'País Bacen'}, ;
+		{SA2->A2_TPISSRS, 'Tipo Escr.'}, ;
+		{SA2->A2_GRPTRIB, 'Grp. Tribut.'}, ;
+		{SA2->A2_RECPIS, 'Rec. PIS'}, ;
+		{SA2->A2_RECCSLL, 'Rec.CSLL'}, ;
+		{SA2->A2_RECCOFI, 'Rec.COFINS'}, ;
+		{SA2->A2_CALCIRF, 'CÁLC. IRRF'}, ;
+		{SA2->A2_VINCULO, 'P. VINCULO'}, ;
+		{A2_DTINIV, 'DT INI VINCU'}, ;
+		{A2_DTFIMV, 'DT FIM VINCU'}, ;
+		{SA2->A2_RFACS, 'REC. FACS'}, ;
+		{SA2->A2_CONTRIB, 'Contribuinte'}, ;
+		{SA2->A2_RFABOV, 'REC. FABOV'}, ;
+		{SA2->A2_DEDBSPC, 'DED. PIS/COF'}, ;
+		{SA2->A2_RECFMD, 'REC. FAMAD'}, ;
+		{SA2->A2_CPOMSP, 'REG. CPOM'}, ;
+		{SA2->A2_SITESBH, 'SITESPRES BH'}, ;
+		{SA2->A2_TPLOGR, 'TP. LOGRAD'}, ;
+		{SA2->A2_TPJ, 'TPJ'}, ;
+		{SA2->A2_DTCONV, 'Dt. Conv'}, ;
+		{SA2->A2_CTARE, 'Contr TARE?'}, ;
+		{SA2->A2_RECFET, 'Rec. FETHAB'}, ;
+		{SA2->A2_MINIRF, 'Vlr. Min. IR'}, ;
+		{SA2->A2_INCLTMG, 'Inc.Prd.Leit'}, ;
+		{SA2->A2_FOMEZER, 'Fome Zero'}, ;
+		{SA2->A2_IRPROG, 'IRRF Prog'}, ;
+		{SA2->A2_INOVAUT, 'Inovar Auto'}, ;
+		{SA2->A2_NOMRESP, 'Nome Resp.'}, ;
+		{SA2->A2_CONTATO, 'Contato'}, ;
+		{SA2->A2_TRANSP, 'Transp.'}, ;
+		{'', '1a Compra'}, ;
+		{'', 'Ult Compra'}, ;
+		{SA2->A2_CIVIL, 'Estado Civil'} ;
+		}
 	Local aEstados2 := {}
-	Local aPaises 	:= trataPaises()
+	Local aPaises := trataPaises()
 	Local oLoja
 	Local oCodigo
 	Local oTelefone
@@ -754,7 +1057,7 @@ Static Function view()
 	Local oInscr
 	Local oDdi
 	Local oDdd
-	Local oTFolder := TFolder():New( 0,0,aTFolder,,oJanela,,,,.T.,,551,730 )
+	Local oTFolder := TFolder():New(0, 0, aTFolder, , oJanela, , , , .T., , 551, 730)
 
 	For nNumero := 1 to 26
 		AADD(aEstados2, aEstados[nNumero][4])
@@ -816,7 +1119,7 @@ Static Function view()
 
 	oBloq         := TGet():New( 100, 200, {|u| if(PCount()==0, aValoresN[16][1], aValoresN[16][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,, aValoresN[16][1],,,,,,, aValoresN[16][2],1,,,,.T.,)
 
-	oComplem      := TGet():New( 120, 200, {|u| if(PCount()==0, aValoresN[17][1], aValoresN[17][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,, aValoresN[17][1],,,,,,, aValoresN[17][2],1,,,,.T.,)
+	oComplekm     := TGet():New( 120, 200, {|u| if(PCount()==0, aValoresN[17][1], aValoresN[17][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,, aValoresN[17][1],,,,,,, aValoresN[17][2],1,,,,.T.,)
 
 	oForm         := TGet():New( 140, 200, {|u| if(PCount()==0, aValoresN[18][1], aValoresN[18][1]:=u)}, oTFolder:aDialogs[1], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,, aValoresN[18][1],,,,,,, aValoresN[18][2],1,,,,.T.,)
 
@@ -895,6 +1198,35 @@ Static Function view()
 	oTpLograd 	  := TGet():New( 000, 200, {|u| if(PCount()==0, aValoresN[52][1], aValoresN[52][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,, aValoresN[52][1],,,,,,, aValoresN[52][2],1,,,,.T.,)
 
 	oTpj          := TGet():New( 030, 200, {|u| if(PCount()==0, aValoresN[53][1], aValoresN[53][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,, aValoresN[53][1],,,,,,, aValoresN[53][2],1,,,,.T.,)
+
+	oDtConv       := TGet():New( 060, 200, {|u| if(PCount()==0, aValoresN[54][1], aValoresN[54][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@D", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[54][2],1,,,,.T.,)
+
+	oCTare        := TGet():New( 090, 200, {|u| if(PCount()==0, aValoresN[55][1], aValoresN[55][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[55][2],1,,,,.T.,)
+
+	oRecFet       := TGet():New( 120, 200, {|u| if(PCount()==0, aValoresN[56][1], aValoresN[56][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[56][2],1,,,,.T.,)
+
+	oVlrMinIr     := TGet():New( 150, 200, {|u| if(PCount()==0, aValoresN[57][1], aValoresN[57][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[57][2],1,,,,.T.,)
+
+	oIncPdrLei    := TGet():New( 180, 200, {|u| if(PCount()==0, aValoresN[58][1], aValoresN[58][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[58][2],1,,,,.T.,)
+
+	oFomeZer      := TGet():New( 210, 200, {|u| if(PCount()==0, aValoresN[59][1], aValoresN[59][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[59][2],1,,,,.T.,)
+
+	oIRProg       := TGet():New( 240, 200, {|u| if(PCount()==0, aValoresN[60][1], aValoresN[60][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[60][2],1,,,,.T.,)
+
+	oInovaut      := TGet():New( 270, 200, {|u| if(PCount()==0, aValoresN[61][1], aValoresN[61][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[61][2],1,,,,.T.,)
+
+	oNomResp      := TGet():New( 300, 200, {|u| if(PCount()==0, aValoresN[62][1], aValoresN[62][1]:=u)}, oTFolder:aDialogs[3], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[62][2],1,,,,.T.,)
+
+	/////////////////////// ABA '4' ///////////////////////
+
+	oContato   	  := TGet():New( 000, 001, {|u| if(PCount()==0, aValoresN[63][1], aValoresN[63][1]:=u)}, oTFolder:aDialogs[4], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[63][2],1,,,,.T.,)
+
+	oTransp    	  := TGet():New( 030, 001, {|u| if(PCount()==0, aValoresN[64][1], aValoresN[64][1]:=u)}, oTFolder:aDialogs[4], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[64][2],1,,,,.T.,)
+	
+	/////////////////////// ABA 'Compras' ///////////////////////
+
+	oCivil        := TGet():New( 000, 001, {|u| if(PCount()==0, aValoresN[67][1], aValoresN[67][1]:=u)}, oTFolder:aDialogs[5], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,.T.,,,,,,,.T.,.F.,, aValoresN[67][2],1,,,,.T.,)
+	
 
 	oButton3      := TButton():Create(oJanela, 340,1,"Fechar",{||oJanela:end()},75,20,,,,.T.,,,,,,)
 	// ATIVANDO JANELA
@@ -976,18 +1308,22 @@ Static Function ReportPrint(oReport, oSection)
 return
 
 
-Static Function verificaCgc(oTipo, oCGC, oCbo, oCnae)
+Static Function verificaCgc(oTipo, oCGC, oCbo, oCnae, oCivil)
 	Local nTipo := oTipo:nAt
 	If nTipo == 1
 		oCGC:Picture := "@R 999.999.999-99"
 		oCbo:lReadOnly  := .F.
 		oCnae:lReadOnly := .T.
+		oCivil:lReadOnly := .F.
+		oCivil:Select(1)
 		oCnae:cText 	:= ''
 
 	Else
 		oCGC:Picture := "@R 99.999.999/9999-99"
 		oCnae:lReadOnly := .F.
 		oCbo:lReadOnly  := .T.
+		oCivil:lReadOnly := .T.
+		oCivil:Select(7)
 		oCbo:cText 		:= ''
 
 	Endif
@@ -1305,12 +1641,25 @@ RETURN aResult
 
 Static Function selecionaVal(oCombo, cValorCampo, aVetor)
 	Local nI
-	If cValorCampo == ''
+	If AllTrim(cValorCampo) == ""
 		RETURN 1
 	Endif
 	For nI := 1 To Len(aVetor)
 		If Left(aVetor[nI],1) == cValorCampo
 			oCombo:Select(nI)
 		Endif
+	Next
+RETURN
+
+Static Function getTransportadora()
+	Local cQuery
+	Local aResult := {}
+	Local nI
+
+	cQuery := "select * from " + RetSqlName('SA4')
+	TCSqlToArr( cQuery, aResult, , ,)
+
+	For nI := 1 To Len(aResult)
+		aResult[nI] := AllTrim(aResult[nI][2])
 	Next
 RETURN
