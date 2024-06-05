@@ -8,7 +8,7 @@
 //------------------------
 Autor: João Henrique Dib
 Projeto: Tarefa de criação de rotina para trabalhar com a tabela SA2
-28/05/2024
+04/06/2024
 //------------------------
 */
 
@@ -27,8 +27,8 @@ User Function tarefaF()
 	Private aCord := {0,0,0,0}
 	Private oBrowse
 
-	RpcSetType(3)
-	PREPARE ENVIRONMENT EMPRESA "99" FILIAL "01" MODULO "FAT"
+	//RpcSetType(3)
+	//PREPARE ENVIRONMENT EMPRESA "99" FILIAL "01" MODULO "FAT"
 
 	aCord[1] := 5
 	aCord[2] := 5
@@ -65,7 +65,7 @@ User Function tarefaF()
 
 	oButton4 := TButton():Create(oMsDialog,105,581,"Visualizar",{||view()},75,20,,,,.T.,,,,,,)
 
-	oButton5 := TButton():Create(oMsDialog,135,581,"Gerar relatório completo",{||view()},75,20,,,,.T.,,,,,,)
+	oButton5 := TButton():Create(oMsDialog,135,581,"Gerar relatório completo",{||PRINTCOMPLETEGRAPH()},75,20,,,,.T.,,,,,,)
 
 	oButton6 := TButton():Create(oMsDialog,165,581,"Gerar relatório resumido",{||PRINTGRAPH()},75,20,,,,.T.,,,,,,)
 
@@ -77,7 +77,7 @@ User Function tarefaF()
 
 
 
-	RESET ENVIRONMENT
+	//RESET ENVIRONMENT
 RETURN
 
 
@@ -109,11 +109,11 @@ Static Function insert()
 	Local aValores := { ;
 		{'', 'Código'}, ;
 		{'', 'Loja'}, ;
-		{'', 'Nome Fantasia'}, ;
+		{'', 'Razão Social'}, ;
 		{'', 'Estado'}, ;
 		{'', 'Municipio'}, ;
 		{'', 'Endereço'}, ;
-		{'', 'Razão Social'}, ;
+		{'', 'Nome Fantasia'}, ;
 		{'', 'Tipo'} ;
 		}
 
@@ -255,7 +255,7 @@ Static Function insert()
 	Local aMunicipios := {}
 	Local aNaturezas := getNatCondAdm("SED")
 	Local aCondominios := getNatCondAdm("SE4")
-	Local aCodAdms := getNatCondAdm("SAE")
+	Local aCodAdms := getNkatCondAdm("SAE")
 	Local aPagtos := getPagtos()
 	Local aTipoPessoa := { "CI - Comercio/Industria", "PF - Pessoa Fisica", "OS - Prestacao de Servico" }
 	Local aZF := getZF()
@@ -507,7 +507,7 @@ Static Function insert()
 
 	oCliente := TComboBox():New( 300, 100, {|u|if(PCount()>0,aValoresN[112][1]:=u,aValoresN[112][1])}, aClientes, 100, , oTFolder:aDialogs[9], ,, , , , .T., ,, , , , , , , aValoresN[112][1], aValoresN[112][2], 1, , )
 
-	oSimpNac := TComboBox():New( 330, 100, {|u|if(PCount()>0,aValoresN[113][1]:=u,aValoresN[113][1])}, aNaoSim, 100, , oTFolder:aDialogs[9], ,, , , , .T., ,, , , , , , , aValoresN[113][1], aValoresN[113][2], 1, , )
+	oSimpNac := TComboBox():New( 060, 300, {|u|if(PCount()>0,aValoresN[113][1]:=u,aValoresN[113][1])}, aNaoSim, 100, , oTFolder:aDialogs[9], ,, , , , .T., ,, , , , , , , aValoresN[113][1], aValoresN[113][2], 1, , )
 
 	//aValoresN[114] TEM QUE VER AINDA
 
@@ -533,7 +533,7 @@ Static Function insert()
 
 	oClasPj  := TComboBox():New( 300, 200, {|u|if(PCount()>0,aValoresN[127][1]:=u,aValoresN[127][1])}, aClasPj, 100, , oTFolder:aDialogs[9], ,, , , , .T., ,, , , , , , , aValoresN[127][1], aValoresN[127][2], 1, , )
 
-	oCargo   := TGet():New( 330, 200, {|u| if(PCount()==0, aValoresN[128][1], aValoresN[128][1]:=u)}, oTFolder:aDialogs[9], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[128][2],1,,,,.T.,)
+	oCargo   := TGet():New( 030, 300, {|u| if(PCount()==0, aValoresN[128][1], aValoresN[128][1]:=u)}, oTFolder:aDialogs[9], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[128][2],1,,,,.T.,)
 
 	oConf    := TComboBox():New( 000, 300, {|u|if(PCount()>0,aValoresN[129][1]:=u,aValoresN[129][1])}, aConf, 100, , oTFolder:aDialogs[9], ,, , , , .T., ,, , , , , , , aValoresN[129][1], aValoresN[129][2], 1, , )
 
@@ -748,11 +748,11 @@ Static Function update()
 	Local aValores := { ;
 		{SA2->A2_COD, 'Código'}, ;
 		{SA2->A2_LOJA, 'Loja'}, ;
-		{SA2->A2_NOME, 'Nome Fantasia'}, ;
+		{SA2->A2_NOME, 'Razão Social'}, ;
 		{SA2->A2_EST, 'Estado'}, ;
 		{SA2->A2_MUN, 'Municipio'}, ;
 		{SA2->A2_END, 'Endereço'}, ;
-		{SA2->A2_NREDUZ, 'Razão Social'}, ;
+		{SA2->A2_NREDUZ, 'Nome Fantasia'}, ;
 		{A2_TIPO, 'Tipo'} ;
 		}
 
@@ -1223,7 +1223,7 @@ Static Function update()
 	oCliente := TComboBox():New( 300, 100, {|u|if(PCount()>0,aValoresN[112][1]:=u,aValoresN[112][1])}, aClientes, 100, , oTFolder:aDialogs[9], ,, , , , .T., ,, , , , , , , aValoresN[112][1], aValoresN[112][2], 1, , )
 	oCliente:Select(selecionaCliente(aValoresN[112][1], aClientes))
 
-	oSimpNac := TComboBox():New( 330, 100, {|u|if(PCount()>0,aValoresN[113][1]:=u,aValoresN[113][1])}, aNaoSim, 100, , oTFolder:aDialogs[9], ,, , , , .T., ,, , , , , , , aValoresN[113][1], aValoresN[113][2], 1, , )
+	oSimpNac := TComboBox():New( 060, 300, {|u|if(PCount()>0,aValoresN[113][1]:=u,aValoresN[113][1])}, aNaoSim, 100, , oTFolder:aDialogs[9], ,, , , , .T., ,, , , , , , , aValoresN[113][1], aValoresN[113][2], 1, , )
 	selecionaNaoSim(oSimpNac, SA2->A2_SIMPNAC)
 
 	//114 AINDA VAI 
@@ -1257,7 +1257,7 @@ Static Function update()
 	oClasPj  := TComboBox():New( 300, 200, {|u|if(PCount()>0,aValoresN[127][1]:=u,aValoresN[127][1])}, aClasPj, 100, , oTFolder:aDialogs[9], ,, , , , .T., ,, , , , , , , aValoresN[127][1], aValoresN[127][2], 1, , )
 	selecionaVal(oClasPj, SA2->A2_TPENT, aClasPj)
 
-	oCargo   := TGet():New( 330, 200, {|u| if(PCount()==0, aValoresN[128][1], aValoresN[128][1]:=u)}, oTFolder:aDialogs[9], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[128][2],1,,,,.T.,)
+	oCargo   := TGet():New( 030, 300, {|u| if(PCount()==0, aValoresN[128][1], aValoresN[128][1]:=u)}, oTFolder:aDialogs[9], 096, 009, "@E XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", ,0,,,,, .T. /*[ lPixel ]*/,,,,,,,,,,,,,,.T.,.F.,, aValoresN[128][2],1,,,,.T.,)
 
 	oConf    := TComboBox():New( 000, 300, {|u|if(PCount()>0,aValoresN[129][1]:=u,aValoresN[129][1])}, aConf, 100, , oTFolder:aDialogs[9], ,, , , , .T., ,, , , , , , , aValoresN[129][1], aValoresN[129][2], 1, , )
 	selecionaVal(oConf, SA2->A2_CONFFIS, aConf)
@@ -1470,11 +1470,11 @@ Static Function view()
 	Local aValores := { ;
 		{SA2->A2_COD, 'Código'}, ;
 		{SA2->A2_LOJA, 'Loja'}, ;
-		{SA2->A2_NOME, 'Nome Fantasia'}, ;
+		{SA2->A2_NOME, 'Razão Social'}, ;
 		{SA2->A2_EST, 'Estado'}, ;
 		{SA2->A2_MUN, 'Municipio'}, ;
 		{SA2->A2_END, 'Endereço'}, ;
-		{SA2->A2_NREDUZ, 'Razão Social'}, ;
+		{SA2->A2_NREDUZ, 'Nome Fantasia'}, ;
 		{SA2->A2_TIPO, 'Tipo'} ;
 		}
 	Local aValoresN := { ;
@@ -1937,10 +1937,10 @@ Static Function PRINTGRAPH()
 	oSection := TRSection():New(oReport,'Fornecedores')
 
 	//Definição das colunas de impressão da seção 1
-	TRCell():New(oSection, "A2_NOME" , "TRB", "Nome", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
-	TRCell():New(oSection, "A2_TIPO", "TRB", "Tipo" , /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
-	TRCell():New(oSection, "A2_CGC" , "TRB", "CGC/CPF"    , '@R 999.999.999-99', /*Tamanho*/,  , /*{|| code-block de impressao }*/)
-
+	TRCell():New(oSection, "A2_NOME" , "SA2", "Nome", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TIPO", "SA2", "Tipo" , /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CGC" , "SA2", "CGC/CPF"    , '@R 999.999.999-99', /*Tamanho*/,  , /*{|| code-block de impressao }*/)
+	
 	//Definição da collection
 	//oColl:=TRCollection():New("TOTAL UF", "COUNT", /*oBreak*/,"Total POR UF",;
 		///*cPicture*/, /*uFormula*/ oSection:Cell("A1_COD"), /*.lEndSection.*/ .F.,;
@@ -1957,7 +1957,7 @@ Static Function ReportPrint(oReport, oSection)
 
 	#IFDEF TOP
 
-		Local cAlias := "TRB"
+		Local cAlias := "SA2"
 
 		BEGIN REPORT QUERY oSection
 
@@ -1977,6 +1977,169 @@ Static Function ReportPrint(oReport, oSection)
 
 return
 
+Static Function PRINTCOMPLETEGRAPH()
+	Local oReport as Object
+	Local oSection as Object
+
+	//Classe TREPORT
+	oReport := TReport():New('Relatório',"Fornecedores",/*cPerg*/,{|oReport|ReportPrint(oReport,oSection)})
+
+	//Seção 1
+	oSection := TRSection():New(oReport,'Fornecedores')
+
+	//Definição das colunas de impressão da seção 1
+
+	TRCell():New(oSection, "A2_COD" , "SA2", "Código", , /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_LOJA" , "SA2", "Loja", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_NOME" , "SA2", "Razão Social", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_EST" , "SA2", "Estado", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_MUN" , "SA2", "Municipio", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_END" , "SA2", "Endereço", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_NREDUZ" , "SA2", "Nome Fantasia", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TIPO" , "SA2", "Tipo", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TEL" , "SA2", "Telefone", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_PFISICA" , "SA2", "RG/Ced.Estr.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_INSCR" , "SA2", "Ins. Estad.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_INSCRM" , "SA2", "Ins. Municip.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DDI" , "SA2", "DDI", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_PAIS" , "SA2", "País", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DDD" , "SA2", "DDD", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DEPTO" , "SA2", "Departamento", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_EMAIL" , "SA2", "Email", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_HPAGE" , "SA2", "Homepage", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TELEX" , "SA2", "TELEX", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_ENDCOMP" , "SA2", "END. COMPLEMENTAR", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_MSBLQL" , "SA2", "Bloqueado", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_COMPLEM" , "SA2", "Complemento", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_FORNEMA" , "SA2", "Forn.Mailing", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CBO" , "SA2", "Cod CBO", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CNAE" , "SA2", "Cod CNAE", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_BANCO" , "SA2", "Banco", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_AGENCIA" , "SA2", "Cod. Agência", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_NUMCON" , "SA2", "Cta Corrente", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_NATUREZ" , "SA2", "Natureza", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_COND" , "SA2", "Cond. Pagto", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CODADM" , "SA2", "CodAdm", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_FORMPAG" , "SA2", "Forma de pagamento", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DVCTA" , "SA2", "Dv Cta Cnab", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DVAGE" , "SA2", "DV Age Cnab", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TIPORUR" , "SA2", "Tp.Contr.Soc", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RECISS" , "SA2", "Recolhe ISS", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CODMUN" , "SA2", "Cod. Mun. ZF", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RECINSS" , "SA2", "Calc. INSS", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TPESSOA" , "SA2", "Tipo Pessoa", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CODPAIS" , "SA2", "País Bacen", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TPISSRS" , "SA2", "Tipo Escr.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_GRPTRIB" , "SA2", "Grp. Tribut.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RECPIS" , "SA2", "Rec. PIS", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RECCSLL" , "SA2", "Rec.CSLL", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RECCOFI" , "SA2", "Rec.COFINS", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CALCIRF" , "SA2", "CÁLC. IRRF", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_VINCULO" , "SA2", "P. VINCULO", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DTINIV" , "SA2", "DT INI VINCU", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DTFIMV" , "SA2", "DT FIM VINCU", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RFACS" , "SA2", "REC. FACS", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CONTRIB" , "SA2", "Contribuinte", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RFABOV" , "SA2", "REC. FABOV", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DEDBSPC" , "SA2", "DED. PIS/COF", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RECFMD" , "SA2", "REC. FAMAD", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CPOMSP" , "SA2", "REG. CPOM", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_SITESBH" , "SA2", "SITESPRES BH", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TPLOGR" , "SA2", "TP. LOGRAD", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TPJ" , "SA2", "TPJ", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DTCONV" , "SA2", "Dt. Conv", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CTARE" , "SA2", "Contr TARE?", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RECFET" , "SA2", "Rec. FETHAB", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_MINIRF" , "SA2", "Vlr. Min. IR", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_INCLTMG" , "SA2", "Inc.Prd.Leit", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_FOMEZER" , "SA2", "Fome Zero", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_IRPROG" , "SA2", "IRRF Prog", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_INOVAUT" , "SA2", "Inovar Auto", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_NOMRESP" , "SA2", "Nome Resp.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CONTATO" , "SA2", "Contato", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TRANSP" , "SA2", "Transp.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CIVIL" , "SA2", "Estado Civil", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RECSEST" , "SA2", "Recolhe SEST", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_PAISSUB" , "SA2", "SubDivPais", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TPCON" , "SA2", "Tipo Contrat", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_NIFEX" , "SA2", "Codigo NIF", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DTFIMR" , "SA2", "Data Fim", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DTINIR" , "SA2", "Data Inicio", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CODNIT" , "SA2", "Num Insc Aut", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DTNASC" , "SA2", "Data nasc.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CATEG" , "SA2", "Categ. SEFIP", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_OCORREN" , "SA2", "Ocorrência", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CATEFD" , "SA2", "Cat eSocial", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_PRIOR" , "SA2", "Prioridade", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_ID_FBFN" , "SA2", "Identificac.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_REPRES" , "SA2", "Represent.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_ID_REPR" , "SA2", "Identif.Repr.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_FABRICA" , "SA2", "Fabricante", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CODLOC" , "SA2", "Cod.Local", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RECCIDE" , "SA2", "Rec Cide", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CODBLO" , "SA2", "Cod.Bloqueio", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_INDRUR" , "SA2", "Ind. Prod. Rur", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_ISSRSLC" , "SA2", "LC ISS RS", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RFASEMT" , "SA2", "Rec.FASE-MT", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CCICMS" , "SA2", "CCICMS", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RIMAMT" , "SA2", "Rec. IMA-MT", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CODFI" , "SA2", "Cod. FIESP", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_REGESIM" , "SA2", "Rg. Simp. MT", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CPRB" , "SA2", "Ret. CPRB", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_INDCP" , "SA2", "Ind. Rural", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_INCULT" , "SA2", "Inc. Cultura", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_DESPORT" , "SA2", "Assoc. Desp.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CALCINP" , "SA2", "Calc.INSS.Pt", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_IMPIP" , "SA2", "Ident.Prod.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CLIENTE" , "SA2", "Cód. Cliente", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_SIMPNAC" , "SA2", "Opt Simp Nac", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_RFUNDES" , "SA2", "Rec.FUNDESA", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_PRSTSER" , "SA2", "Ind. Prest.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_MJURIDI" , "SA2", "M.Jurídico", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_MUNSC" , "SA2", "Cod Mun SC", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TRIBFAV" , "SA2", "Pes.Tri.Fav", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_MSBLQD" , "SA2", "BlqTemporal", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CODSIAF" , "SA2", "Cod.Mun.SIAF", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_ENDNOT" , "SA2", "End.Not.Form", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_MOTNIF" , "SA2", "Mot.NIF", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_LOJCLI" , "SA2", "Loja Cliente", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_TPENT" , "SA2", "Clas.PJ", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CARGO" , "SA2", "Cargo Resp.", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+	TRCell():New(oSection, "A2_CONFFIS" , "SA2", "Conf. Física", /*Picture*/, /*Tamanho*/, /*lPixel*/, /*{|| code-block de impressao }*/)
+
+	
+	//Definição da collection
+	//oColl:=TRCollection():New("TOTAL UF", "COUNT", /*oBreak*/,"Total POR UF",;
+		///*cPicture*/, /*uFormula*/ oSection:Cell("A1_COD"), /*.lEndSection.*/ .F.,;
+		///*.lEndReport.*/ .T., /*oParent*/ oSection, /*bCondition*/,;
+		///*uContent*/ oSection:Cell("A1_EST") )
+
+	//oReport:PrintGraphic()
+	oReport:PrintDialog()
+RETURN
+
+Static Function CompleteReportPrint(oReport, oSection)
+	#IFDEF TOP
+
+		Local cAlias := "SA2"
+
+		BEGIN REPORT QUERY oSection
+
+			BeginSql alias cAlias
+            SELECT *
+            FROM %table:SA2% 
+			WHERE %notdel%
+			EndSql
+
+		END REPORT QUERY oSection
+
+		//oSection:aCollection[1]:SetGraphic(4,"UF")
+		oSection:PrintGraphic()
+		oSection:Print()
+
+	#ENDIF
+
+RETURN
 
 Static Function verificaCgc(oTipo, oCGC, oCbo, oCnae, oCivil)
 	Local nTipo := oTipo:nAt
@@ -2098,7 +2261,6 @@ Static Function trataPaises()
 
 RETURN aPaises
 
-
 Static Function selecionaPais(oPais, cPais, aPaises)
 	Local nI
 
@@ -2115,7 +2277,6 @@ Static Function selecionaPais(oPais, cPais, aPaises)
 
 RETURN
 
-
 Static Function trocaDescPais(cCodPais, oDescPais)
 	Local cNome := trataNomeMun(cCodPais)
 	oDescPais:cText := cNome
@@ -2131,7 +2292,6 @@ Static Function getPaisFromCod(cCodPais)
 	Endif
 
 RETURN AllTrim(aResult[1][1])
-
 
 Static Function selecionaSimNao(oBloq, cBloq)
 	If cBloq == '1'
@@ -2366,4 +2526,3 @@ Static Function selecionaCliente(cCliente, aClientes)
 	Next
 
 RETURN 1
-
